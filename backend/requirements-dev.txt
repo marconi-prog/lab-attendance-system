@@ -1,0 +1,5 @@
+-r requirements.txt
+pytest==8.4.2
+pytest-cov==7.0.0
+python-socketio[client]==5.14.3
+openapi-spec-validator==0.7.2

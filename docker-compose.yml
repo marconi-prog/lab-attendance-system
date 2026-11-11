@@ -1,0 +1,70 @@
+name: sistema-atendimento
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?defina MYSQL_ROOT_PASSWORD no .env}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-atendimento}
+      MYSQL_USER: ${MYSQL_USER:-atendimento}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?defina MYSQL_PASSWORD no .env}
+      TZ: UTC
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --default-time-zone=+00:00
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/scripts:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      FLASK_ENV: production
+      DATABASE_URL: mysql+pymysql://${MYSQL_USER:-atendimento}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE:-atendimento}?charset=utf8mb4
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?defina JWT_SECRET_KEY no .env}
+      SECRET_KEY: ${SECRET_KEY:?defina SECRET_KEY no .env}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:8080}
+      ENFORCE_BUSINESS_HOURS: ${ENFORCE_BUSINESS_HOURS:-true}
+      LAB_NAME: ${LAB_NAME:-Laboratório de Análises Clínicas}
+    ports:
+      - "${BACKEND_PORT:-5000}:5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:5000/api/health').status==200 else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        EXPO_PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:5000}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:

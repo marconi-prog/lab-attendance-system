@@ -1,0 +1,24 @@
+# Segredos
+.env
+backend/.env
+frontend/.env
+
+# Python
+__pycache__/
+*.pyc
+backend/.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Expo
+node_modules/
+frontend/dist/
+frontend/.expo/
+frontend/web-build/
+frontend/expo-env.d.ts
+
+# Sistema / IDE
+.DS_Store
+.idea/
+.vscode/
