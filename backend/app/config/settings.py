@@ -27,6 +27,10 @@ def _list(name: str, default: str = "") -> list[str]:
 
 
 class BaseConfig:
+    # Nome do ambiente efetivamente carregado (usado, p.ex., para recusar
+    # comandos de demonstração em produção). Definido em cada subclasse.
+    ENV_NAME: str | None = None
+
     APP_NAME = "Sistema de Controle de Atendimento"
     APP_VERSION = "1.0.0"
     LAB_NAME = os.getenv("LAB_NAME", "Laboratório de Análises Clínicas")
@@ -69,14 +73,16 @@ class BaseConfig:
 
 
 class DevelopmentConfig(BaseConfig):
+    ENV_NAME = "development"
     DEBUG = True
 
 
 class ProductionConfig(BaseConfig):
-    pass
+    ENV_NAME = "production"
 
 
 class TestingConfig(BaseConfig):
+    ENV_NAME = "testing"
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv("TEST_DATABASE_URL")
     SECRET_KEY = os.getenv("SECRET_KEY") or "test-only-secret-key-not-for-production-use"
