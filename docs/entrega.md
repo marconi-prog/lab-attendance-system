@@ -9,28 +9,31 @@ Conformidade técnica e evidências de validação: [`conformidade.md`](conformi
 |---|---|---|
 | Nome do projeto | **Aprovado** | "Sistema de Controle de Atendimento — Laboratório de Análises Clínicas" (repositório `lab-attendance-system`) |
 | Tecnologia do frontend (Expo) | **Aprovado** | Expo SDK 58 / React Native + Web |
-| Nome da equipe | Pendente | — |
-| Integrantes (nome completo) | Pendente | `docs/requirements.md` prevê equipe de 6 (Dev 1–6), sem nomes |
-| Matrículas | Pendente | — |
-| Colaboradores no GitHub | Pendente — não verificado | Conferir em *Settings → Collaborators* |
+| Nome da equipe | Pendente | Identificação operacional: "Equipe lab-attendance-system" (**não** é nome oficial) |
+| Integrantes (nome completo) | **Preenchido** | Informados pelo solicitante (tabela abaixo) |
+| Matrículas | **Preenchido** | Informadas pelo solicitante, zeros à esquerda preservados |
+| Colaboradores no GitHub | Verificação incompleta | Conector confirma escrita para `DevNeto07`, mas a consulta específica de colaboradores retornou HTTP 403; o proprietário deve conferir os seis integrantes |
 | Inscrição da equipe | Pendente | Ver §3 (datas alternativas) |
 
 | # | Nome | Matrícula | Usuário GitHub | Colaborador no repositório? | Módulo |
 |---|---|---|---|---|---|
-| 1 | pendente | pendente | pendente | ☐ | Infra, banco, migrations, CI de testes |
-| 2 | pendente | pendente | pendente | ☐ | Autenticação, autorização, usuários, auditoria |
-| 3 | pendente | pendente | pendente | ☐ | Emissão, fila, máquina de estados, expediente |
-| 4 | pendente | pendente | pendente | ☐ | Atendimento, tempo real, relatórios |
-| 5 | pendente | pendente | pendente | ☐ | Frontend: base, login, totem, painel, áudio |
-| 6 | pendente | pendente | pendente | ☐ | Frontend: atendente e gestão; documentação e apresentação |
+| 1 | Karllyson Paula | 01861379 | pendente | ☐ | a definir |
+| 2 | Marconi Farias Araújo | 01783919 | `marconi-prog` | ☐ | a definir |
+| 3 | Gustavo Buled Martins | 01797483 | pendente | ☐ | a definir |
+| 4 | Sérgio Luiz dos Santos Neto | 01819969 | `DevNeto07` | ☐ | a definir |
+| 5 | Pedro Henrique Rodrigues da Silva | 01794091 | pendente | ☐ | a definir |
+| 6 | Janildo Caluête de Farias Júnior | 01799458 | pendente | ☐ | a definir |
+
+A ordem da tabela não indica divisão de módulos; os módulos previstos em `requirements.md` (Dev 1–6)
+ainda não foram atribuídos a integrantes.
 
 ## 2. URLs
 
 | Item | Valor | Situação |
 |---|---|---|
 | Repositório | https://github.com/marconi-prog/lab-attendance-system | Confirmado pelo `git remote` |
-| Pull request `dev` → `main` | — | Pendente (não autorizado até agora) |
-| Tag/release da entrega | — | Pendente |
+| Pull request `dev` → `main` | — | Autorizado; aguarda publicação da `dev` pelo Git autenticado |
+| Tag/release da entrega | `v1.0-entrega` (prevista) | Após integração em `main`; ainda não criada |
 | Demonstração online | — | Inexistente: demonstração prevista é local |
 | Vídeo ou slides | — | Pendente (se exigido) |
 | Swagger | `http://localhost:5000/api/docs` | Apenas local |
@@ -50,19 +53,22 @@ O solicitante declarou que cuidará das datas. Registro das informações recebi
 Estado em 23/11/2026: `main` = `origin/main` (`4246e7d`); a `dev` local está **à frente** da `main`
 (commits `7710003`: seed; `6d723cd`: frontend/lint; `04f3849`: Docker; documentação em lote próprio)
 e não foi publicada. Autor dos novos commits: `DevNeto07 <sergiunetu@gmail.com>`, confirmado pelo solicitante.
-Push, PR, merge e tag **não foram autorizados** até agora. Consulte `git log main..dev` para a lista completa.
+Push, PR, merge e tag: **autorização recebida**. A primeira tentativa sem autenticação falhou; a nova
+tentativa abriu a janela “Connect to GitHub” do gerenciador de credenciais e aguarda conclusão do login.
+Consulte `git log main..dev` para a lista completa dos commits locais preservados.
 
 - [x] Revisar e organizar as correções locais em commits por lote na `dev`
-- [ ] Publicar a `dev` no remoto (quando autorizado)
-- [ ] Pull request `dev` → `main` com as evidências de validação
+- [ ] Publicar a `dev` no remoto — aguarda autenticação do Git (autorizado)
+- [ ] Pull request `dev` → `main` com as evidências de validação — após publicação (autorizado)
 - [ ] Revisão por pelo menos um integrante que não seja o autor
-- [ ] Merge em `main` (quando autorizado)
-- [ ] Tag da versão entregue em `main` (nome a definir)
+- [ ] Merge em `main` — em andamento (autorizado)
+- [ ] Tag `v1.0-entrega` na versão integrada em `main` (autorizado)
 
 ## 5. Validação
 
 - [x] `pytest` em `backend/tests/` — 196 aprovados em MySQL 8.0.46 descartável (243,68 s)
 - [x] `pytest tests_isolated` — 39 aprovados em SQLite temporário (48,10 s)
+- [x] Nova execução completa: **235 testes aprovados** em 193,60 s, nos bancos descartáveis de validação
 - [x] `flask db upgrade` em banco descartável
 - [x] `flask seed-demo` — `--dry-run` + 2 execuções reais em MySQL; a 2ª preservou contas e senhas
 - [x] `npm run typecheck` — aprovado em contêiner Node 24
@@ -70,7 +76,8 @@ Push, PR, merge e tag **não foram autorizados** até agora. Consulte `git log m
 - [x] `npm run build:web` — aprovado em Node 24 e no build Docker (Node 22)
 - [x] Docker Compose com volume/projeto de revisão novos — build aprovado e três serviços saudáveis
 - [x] Smoke integrado via API no Docker — gestor, atendente, guichê, emissão, chamada, atendimento, painel e relatório
-- [ ] Roteiro de demonstração (telas e áudio) — sem validação registrada
+- [x] Fluxo guiado das telas de totem, atendente, gestor e painel — ver `validacao-interface.md`
+- [x] Sinal e voz confirmados pelo solicitante durante as chamadas; repetir no equipamento da apresentação
 - [ ] Conferir [`conformidade.md`](conformidade.md) contra os enunciados oficiais
 
 ## 6. Pendências documentais
@@ -78,9 +85,9 @@ Push, PR, merge e tag **não foram autorizados** até agora. Consulte `git log m
 | Pendência | Situação | Ação |
 |---|---|---|
 | Enunciados originais (PDFs) | Não disponíveis | Anexar ou registrar links; reconferir a matriz |
-| Licença MIT | **Sob responsabilidade do solicitante**; sem arquivo `LICENSE` | Não criado nesta preparação; titular não informado |
+| Licença MIT | **Adicionada** (`LICENSE`, 2026, os seis integrantes) | — |
 | Declaração de uso de IA | Redigida no README §9 | Equipe completar o histórico anterior a 23/11/2026 |
-| Identificação da equipe | Pendente | Preencher §1 |
+| Identificação da equipe | Integrantes e matrículas preenchidos | Pendentes: nome oficial da equipe, GitHub de 4 integrantes, módulos |
 
 ## 7. Roteiro de demonstração
 

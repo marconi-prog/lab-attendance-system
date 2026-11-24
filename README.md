@@ -214,8 +214,10 @@ relatórios, painel e Socket.IO.
 **39 testes** de `tests_isolated/` aprovados em SQLite temporário; `flask db upgrade` e `flask seed-demo`
 validados em bancos descartáveis. Instalação limpa (`npm ci`), TypeScript, lint e build web passaram.
 O Docker Compose foi construído e executado em projeto/volume de revisão separados: os três serviços
-ficaram saudáveis e o fluxo de atendimento passou via API. Validação manual das telas e do áudio e
-conferência dos enunciados originais seguem pendentes — detalhes em [`docs/conformidade.md`](docs/conformidade.md).
+ficaram saudáveis e o fluxo de atendimento passou via API. A nova execução completa aprovou **235 testes**.
+O fluxo guiado das telas foi verificado e o solicitante confirmou sinal e voz. Veja o
+[`registro da interface`](docs/validacao-interface.md). A conferência dos enunciados originais continua
+pendente — detalhes em [`docs/conformidade.md`](docs/conformidade.md).
 
 ## 5. Estrutura
 
@@ -249,7 +251,8 @@ nenhuma credencial no código (a aplicação não sobe sem os segredos no ambien
 ## 8. Limitações conhecidas
 
 * A suíte de testes depende de MySQL real e apaga o banco de testes; apenas `tests_isolated/` roda sem MySQL.
-* Não há testes automatizados de interface no frontend (há TypeScript e lint); telas e áudio ainda dependem de validação manual.
+* Não há suíte E2E automatizada de interface no frontend (há TypeScript, lint e validação guiada registrada).
+  Repita o áudio no equipamento da apresentação para conferir saída de som, volume e voz.
 * Builds nativos (Android/iOS) não foram validados; o uso principal é web (Docker/nginx) e Expo Go.
 * `flask seed-demo` só funciona em desenvolvimento; no Docker (produção) é recusado por projeto.
 * O áudio do painel exige um clique para ser liberado pelo navegador; sem síntese de voz, toca só o sinal sonoro.
@@ -269,7 +272,22 @@ nenhuma credencial no código (a aplicação não sobe sem os segredos no ambien
 * **Histórico anterior** (incluindo os commits de 10/11/2026): o uso de IA é **desconhecido** — não há
   registro no repositório. A equipe deve completar esta declaração.
 
-## 10. Licença
+## 10. Equipe
 
-Licença pretendida: **MIT**, sob responsabilidade do solicitante. O arquivo `LICENSE` não foi criado nesta
-preparação (ver [`docs/entrega.md`](docs/entrega.md)).
+Identificação operacional: **Equipe lab-attendance-system** (não é o nome oficial da equipe, ainda não
+informado).
+
+| Nome | Matrícula |
+|---|---|
+| Karllyson Paula | 01861379 |
+| Marconi Farias Araújo | 01783919 |
+| Gustavo Buled Martins | 01797483 |
+| Sérgio Luiz dos Santos Neto | 01819969 |
+| Pedro Henrique Rodrigues da Silva | 01794091 |
+| Janildo Caluête de Farias Júnior | 01799458 |
+
+Usuários GitHub e colaboradores: ver [`docs/entrega.md`](docs/entrega.md).
+
+## 11. Licença
+
+Distribuído sob a licença **MIT** — ver [`LICENSE`](LICENSE).
