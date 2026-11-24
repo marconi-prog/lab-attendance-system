@@ -17,6 +17,7 @@ import { formatTime } from '@/utils/format';
 
 const PANEL_KEY = ['panel'] as const;
 const READY = '#22C55E';
+const CODE_LETTER_SPACING = 6;
 
 /** Entrada discreta (fade + leve subida) para senhas que acabaram de aparecer. */
 function FadeIn({ children }: { children: ReactNode }) {
@@ -63,7 +64,7 @@ function QueueBlock({ queue }: { queue: WaitingQueue }) {
 export default function PanelScreen() {
   const queryClient = useQueryClient();
   const { time, date } = useClock();
-  const { isWide, width } = useResponsive();
+  const { isWide, isPhone } = useResponsive();
   const { enabled: soundOn, announce, unlock, voiceAvailable } = useAnnouncer();
   const [connected, setConnected] = useState(false);
   const [flash] = useState(() => new Animated.Value(0));
@@ -101,7 +102,15 @@ export default function PanelScreen() {
   const latest = data?.latest ?? [];
   const [current, ...previous] = latest;
   const highlightBg = flash.interpolate({ inputRange: [0, 1], outputRange: [colors.panelCard, '#1E6A9E'] });
-  const codeSize = Math.min(isWide ? 170 : 110, width / (isWide ? 7 : 4.5));
+  // Tamanho da senha calculado pela largura real do bloco (não pela janela),
+  // para que a senha apareça sempre inteira numa linha, sem reticências.
+  const [codeBoxWidth, setCodeBoxWidth] = useState(0);
+  const codeLength = Math.max(current?.short_code.length ?? 1, 1);
+  const maxCodeSize = isWide ? 170 : 110;
+  const codeSize =
+    codeBoxWidth > 0
+      ? Math.max(24, Math.min(maxCodeSize, (codeBoxWidth - codeLength * CODE_LETTER_SPACING) / (codeLength * 0.75)))
+      : 48;
 
   const nextColumn = (
     <View style={[styles.column, styles.nextColumn, isWide && { flex: 1.25 }]}>
@@ -141,9 +150,17 @@ export default function PanelScreen() {
         {current ? (
           <>
             <Text style={styles.currentLabel}>{current.is_repeat ? 'ÚLTIMA CHAMADA' : 'SENHA CHAMADA'}</Text>
-            <Text style={[styles.currentCode, { fontSize: codeSize }]} adjustsFontSizeToFit numberOfLines={1}>
-              {current.short_code}
-            </Text>
+            <View
+              style={styles.currentCodeBox}
+              onLayout={(e) => {
+                const w = Math.floor(e.nativeEvent.layout.width);
+                setCodeBoxWidth((prev) => (prev === w ? prev : w));
+              }}
+            >
+              <Text style={[styles.currentCode, { fontSize: codeSize }]} adjustsFontSizeToFit numberOfLines={1}>
+                {current.short_code}
+              </Text>
+            </View>
             <View style={[styles.typePill, { backgroundColor: typeColors[current.type].bg }]}>
               <Text style={styles.typePillText}>{current.type_label}</Text>
             </View>
@@ -194,17 +211,17 @@ export default function PanelScreen() {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.header}>
-        <Pressable onLongPress={() => router.replace('/')} delayLongPress={1500}>
-          <Text style={styles.lab}>{data?.lab_name ?? LAB_NAME}</Text>
+      <View style={[styles.header, isPhone && styles.headerPhone]}>
+        <Pressable onLongPress={() => router.replace('/')} delayLongPress={1500} style={styles.labBox}>
+          <Text style={[styles.lab, isPhone && styles.labPhone]}>{data?.lab_name ?? LAB_NAME}</Text>
           <Text style={styles.date}>{date.charAt(0).toUpperCase() + date.slice(1)}</Text>
         </Pressable>
-        <View style={styles.headerRight}>
+        <View style={[styles.headerRight, isPhone && styles.headerRightPhone]}>
           <ConnectionDot connected={connected} dark />
           <Pressable onPress={unlock} accessibilityLabel={soundOn ? 'Som ativado' : 'Ativar som'} style={styles.soundBtn}>
             {soundOn ? <Volume2 color={colors.panelText} size={22} /> : <VolumeX color="#F59E0B" size={22} />}
           </Pressable>
-          <Text style={styles.clock}>{time}</Text>
+          <Text style={[styles.clock, isPhone && styles.clockPhone]}>{time}</Text>
         </View>
       </View>
 
@@ -242,6 +259,11 @@ const styles = StyleSheet.create({
   lab: { color: colors.panelText, fontSize: 24, fontWeight: '800' },
   date: { color: colors.panelMuted, fontSize: 14 },
   clock: { color: colors.panelText, fontSize: 36, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  headerPhone: { flexDirection: 'column', alignItems: 'stretch', gap: spacing.md },
+  headerRightPhone: { alignSelf: 'stretch', justifyContent: 'space-between', gap: spacing.sm },
+  labBox: { minWidth: 0, flexShrink: 1 },
+  labPhone: { fontSize: 20 },
+  clockPhone: { fontSize: 28 },
   soundBtn: { padding: spacing.sm },
   body: { flexGrow: 1, flex: 1, padding: spacing.lg, gap: spacing.lg },
 
@@ -273,7 +295,8 @@ const styles = StyleSheet.create({
 
   current: { flex: 1, minHeight: 320, borderRadius: radius.xl, alignItems: 'center', justifyContent: 'center', padding: spacing.xl, gap: spacing.xs, borderWidth: 3, borderColor: READY },
   currentLabel: { color: colors.panelMuted, fontSize: 22, fontWeight: '800', letterSpacing: 3 },
-  currentCode: { color: colors.panelText, fontWeight: '900', letterSpacing: 6, fontVariant: ['tabular-nums'] },
+  currentCodeBox: { width: '100%', alignItems: 'center' },
+  currentCode: { color: colors.panelText, fontWeight: '900', letterSpacing: CODE_LETTER_SPACING, fontVariant: ['tabular-nums'] },
   typePill: { paddingHorizontal: 18, paddingVertical: 6, borderRadius: 999 },
   typePillText: { color: '#fff', fontSize: 20, fontWeight: '800' },
   counterLabel: { color: colors.panelMuted, fontSize: 22, fontWeight: '800', letterSpacing: 3, marginTop: spacing.md },

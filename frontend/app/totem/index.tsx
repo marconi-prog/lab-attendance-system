@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { Accessibility, ClipboardList, Users } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { LAB_NAME, TOTEM_RESET_SECONDS } from '@/constants/config';
 import { useClock } from '@/hooks/useClock';
@@ -22,7 +22,7 @@ const OPTIONS: { type: TicketType; title: string; subtitle: string; icon: Lucide
 
 export default function TotemScreen() {
   const { time } = useClock();
-  const { isWide } = useResponsive();
+  const { isWide, isPhone } = useResponsive();
   const [issued, setIssued] = useState<IssuedTicket | null>(null);
   const [countdown, setCountdown] = useState(TOTEM_RESET_SECONDS);
 
@@ -61,14 +61,20 @@ export default function TotemScreen() {
 
   return (
     <View style={styles.screen}>
-      <View style={styles.header}>
-        <Pressable onLongPress={() => router.replace('/')} delayLongPress={1500} accessibilityHint="Pressione longamente para sair do modo totem">
+      <View style={[styles.header, isPhone && styles.headerPhone]}>
+        <Pressable
+          style={styles.labWrap}
+          onLongPress={() => router.replace('/')}
+          delayLongPress={1500}
+          accessibilityHint="Pressione longamente para sair do modo totem"
+        >
           <Text style={styles.lab}>{LAB_NAME}</Text>
         </Pressable>
         <Text style={styles.clock}>{time}</Text>
       </View>
 
       {issued ? (
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <Pressable style={styles.resultArea} onPress={() => setCountdown(0)} accessibilityLabel="Senha emitida. Toque para concluir">
           <View style={[styles.ticketCard, { borderColor: typeColors[issued.ticket.type].bg }]}>
             <Text style={styles.resultLabel}>Sua senha</Text>
@@ -85,8 +91,9 @@ export default function TotemScreen() {
             <Text style={styles.hint}>Aguarde a chamada no painel. Voltando em {countdown}s…</Text>
           </View>
         </Pressable>
+        </ScrollView>
       ) : (
-        <View style={styles.body}>
+        <ScrollView style={styles.scroll} contentContainerStyle={[styles.scrollContent, styles.body]}>
           <Text style={styles.prompt}>Toque no tipo de atendimento</Text>
           {issue.isError ? <Text style={styles.error}>{errorMessage(issue.error)}</Text> : null}
           {closed ? <Text style={styles.error}>Emissão de senhas encerrada. Horário: {info.data?.business_hours.issue_open} às {info.data?.business_hours.close}.</Text> : null}
@@ -109,7 +116,7 @@ export default function TotemScreen() {
               </Pressable>
             ))}
           </View>
-        </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -118,9 +125,13 @@ export default function TotemScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: spacing.xxl, paddingVertical: spacing.lg, backgroundColor: colors.primaryDark },
+  headerPhone: { flexDirection: 'column', alignItems: 'flex-start', gap: spacing.xs, paddingHorizontal: spacing.lg },
+  labWrap: { flexShrink: 1 },
   lab: { color: colors.white, fontSize: 20, fontWeight: '800' },
   clock: { color: colors.white, fontSize: 22, fontWeight: '700', fontVariant: ['tabular-nums'] },
-  body: { flex: 1, padding: spacing.xxl, gap: spacing.xl, justifyContent: 'center' },
+  scroll: { flex: 1 },
+  scrollContent: { flexGrow: 1 },
+  body: { padding: spacing.xxl, gap: spacing.xl, justifyContent: 'center' },
   prompt: { fontSize: 30, fontWeight: '800', color: colors.text, textAlign: 'center' },
   error: { color: colors.danger, fontSize: 18, fontWeight: '700', textAlign: 'center' },
   options: { gap: spacing.xl, justifyContent: 'center', alignItems: 'stretch' },
