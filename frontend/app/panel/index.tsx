@@ -20,7 +20,7 @@ const READY = '#22C55E';
 
 /** Entrada discreta (fade + leve subida) para senhas que acabaram de aparecer. */
 function FadeIn({ children }: { children: ReactNode }) {
-  const v = useRef(new Animated.Value(0)).current;
+  const [v] = useState(() => new Animated.Value(0));
   useEffect(() => {
     Animated.timing(v, { toValue: 1, duration: 450, easing: Easing.out(Easing.quad), useNativeDriver: false }).start();
   }, [v]);
@@ -66,14 +66,16 @@ export default function PanelScreen() {
   const { isWide, width } = useResponsive();
   const { enabled: soundOn, announce, unlock, voiceAvailable } = useAnnouncer();
   const [connected, setConnected] = useState(false);
-  const flash = useRef(new Animated.Value(0)).current;
+  const [flash] = useState(() => new Animated.Value(0));
 
   // Carga inicial via REST; depois o socket mantém os dados atualizados
   // (emissão, chamada, início/fim de atendimento e encerramento do dia).
   const { data, isError } = useQuery({ queryKey: PANEL_KEY, queryFn: panelService.snapshot, refetchInterval: connected ? false : 15_000 });
 
   const announceRef = useRef(announce);
-  announceRef.current = announce;
+  useEffect(() => {
+    announceRef.current = announce;
+  }, [announce]);
 
   useEffect(() => {
     const socket = createPanelSocket();

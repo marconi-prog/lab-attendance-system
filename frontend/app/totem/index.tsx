@@ -35,17 +35,27 @@ export default function TotemScreen() {
     },
   });
 
-  // Volta automaticamente para a tela de seleção.
+  const resetIssue = issue.reset;
+
+  // Volta automaticamente para a tela de seleção. O reset acontece dentro do
+  // callback do timer (não no corpo do efeito); toque para concluir zera o
+  // contador e dispara o reset imediatamente. O timeout é limpo ao desmontar.
   useEffect(() => {
     if (!issued) return;
-    if (countdown <= 0) {
-      setIssued(null);
-      issue.reset();
-      return;
-    }
-    const id = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    const finished = countdown <= 1;
+    const id = setTimeout(
+      () => {
+        if (finished) {
+          setIssued(null);
+          resetIssue();
+        } else {
+          setCountdown((c) => c - 1);
+        }
+      },
+      countdown <= 0 ? 0 : 1000,
+    );
     return () => clearTimeout(id);
-  }, [issued, countdown, issue]);
+  }, [issued, countdown, resetIssue]);
 
   const closed = info.data && !info.data.issuing_allowed;
 

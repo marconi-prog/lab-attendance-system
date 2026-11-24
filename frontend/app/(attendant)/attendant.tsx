@@ -28,7 +28,7 @@ const STEPS: { status: TicketStatus[]; label: string }[] = [
 ];
 
 function useElapsed(startIso: string | null | undefined) {
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(Date.now);
   useEffect(() => {
     if (!startIso) return;
     const id = setInterval(() => setNow(Date.now()), 1000);

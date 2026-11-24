@@ -1,4 +1,4 @@
-import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, create, isAxiosError, type InternalAxiosRequestConfig } from 'axios';
 
 import { API_URL } from '@/constants/config';
 import type { ApiErrorBody } from '@/types/api';
@@ -17,7 +17,7 @@ export class ApiError extends Error {
   }
 }
 
-export const api = axios.create({
+export const api = create({
   baseURL: `${API_URL}/api`,
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
@@ -84,7 +84,7 @@ api.interceptors.response.use(
 
 export function toApiError(error: unknown): ApiError {
   if (error instanceof ApiError) return error;
-  if (axios.isAxiosError(error)) {
+  if (isAxiosError(error)) {
     const body = error.response?.data as ApiErrorBody | undefined;
     if (body?.error) {
       return new ApiError(body.error.message, error.response!.status, body.error.code, body.error.details);
