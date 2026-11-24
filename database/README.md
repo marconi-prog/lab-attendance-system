@@ -6,7 +6,7 @@ MySQL 8.0 (InnoDB, utf8mb4). O schema é gerenciado **somente** pelas migrations
 | Pasta | Conteúdo |
 |---|---|
 | `scripts/` | Executados pelo container MySQL na primeira inicialização (`/docker-entrypoint-initdb.d`). Cria o banco `atendimento_test`. |
-| `seeds/` | Dados iniciais em SQL (guichês). O mesmo é feito por `flask seed`. Usuários **não** têm seed: o primeiro administrador é criado com `flask create-admin` (senha digitada, nunca versionada). |
+| `seeds/` | Dados iniciais em SQL (guichês). O mesmo é feito por `flask seed`. Usuários **não** têm seed: o primeiro administrador é criado com `flask create-admin` (senha digitada, nunca versionada). Exceção apenas para demonstração local: `flask seed-demo --confirm-demo` (recusado fora de `FLASK_ENV=development`; ver README §3.4). |
 
 ## Operações
 

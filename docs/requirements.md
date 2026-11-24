@@ -20,7 +20,7 @@
 | Iniciar/finalizar, duração | `AttendanceService.start/finish` | `test_start_and_finish` |
 | Ausência após duas chamadas | `recall` + `no_show` | `test_no_show_after_two_calls_releases_queue`, `test_third_call_is_not_allowed` |
 | Histórico de chamadas imutável | tabela `calls` (`UNIQUE(ticket_id, attempt_number)`) | `test_recall_creates_new_call_record` |
-| Painel: 5 últimas, só chamadas, tempo real, áudio | `PanelService`, namespace `/panel`, `useAnnouncer` | `test_panel_realtime.py` + E2E navegador |
+| Painel: 5 últimas, só chamadas, tempo real, áudio | `PanelService`, namespace `/panel`, `useAnnouncer` | `test_panel_realtime.py`; áudio/telas: validação manual pendente (sem E2E automatizado) |
 | Expediente 07–17h, encerramento, America/Recife | `BusinessHours`, `DayClosingService`, `scheduler.py` | `test_business_hours`, `test_calls_blocked_outside_business_hours`, `test_day_closing_*`, `test_scheduled_closing*` |
 | JWT access/refresh, revogação, hash | `AuthService`, `middlewares/auth.py` | `test_auth.py` |
 | Autorização por perfil | `roles_required` via `api_route` | `test_anonymous_is_rejected`, `test_attendant_cannot_access_admin`, `test_admin_cannot_operate_counter` |
@@ -62,10 +62,11 @@
 
 ## Roteiro de apresentação sugerido
 
-1. `docker compose up -d` e criação do administrador.
+1. `docker compose up -d` e criação do administrador (em ambiente local de desenvolvimento, alternativa:
+   `flask seed-demo --confirm-demo`, que cria gestor e atendente sem emitir senhas — ver README §3.4).
 2. Gestor cria dois atendentes com guichês distintos.
 3. Totem emite SG, SG, SE, SP, SP — mostrar códigos `YYMMDD-PPSQ`.
 4. Dois atendentes chamam: painel exibe e anuncia na ordem SP → SE → SP → SG.
 5. Repetir chamada ("Última chamada…") e registrar ausência.
 6. Relatórios do dia, auditoria e encerramento do expediente.
-7. Rodar `pytest` mostrando os testes de concorrência.
+7. Rodar `pytest` mostrando os testes de concorrência (atenção: apaga e recria o banco de `TEST_DATABASE_URL`).

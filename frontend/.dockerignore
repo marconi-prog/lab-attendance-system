@@ -1,4 +1,8 @@
-node_modules
-dist
-.expo
+node_modules/
 .env
+.env.*
+!.env.example
+.expo/
+dist/
+web-build/
+npm-debug.log*

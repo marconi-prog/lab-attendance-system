@@ -7,6 +7,7 @@ import os
 import click
 from flask import Flask
 
+from app.demo_seed import seed_demo_command
 from app.extensions import db
 from app.models import Counter, User, UserRole
 from app.repositories import UserRepository
@@ -61,3 +62,6 @@ def register_cli(app: Flask) -> None:
         from app.services.day_closing_service import DayClosingService
 
         click.echo(f"{DayClosingService.close_today()} senha(s) descartada(s).")
+
+    # Somente demonstração: opt-in explícito, recusado fora de FLASK_ENV=development.
+    app.cli.add_command(seed_demo_command)
