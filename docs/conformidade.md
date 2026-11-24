@@ -76,11 +76,11 @@ O solicitante confirmou a reprodução do sinal e da voz durante o teste.
 | I05 | Testes executáveis com segurança | `backend/tests/` (MySQL), `backend/tests_isolated/` (SQLite) | Validado | README corrigido: `tests/` inteira (inclusive `tests/unit`) apaga o banco de testes | 196 aprovados em MySQL descartável; 39 isolados aprovados |
 | I06 | Dados de demonstração seguros | `backend/app/demo_seed.py` (`flask seed-demo`) | Validado | Comando novo (commit `7710003`) | 39 testes isolados aprovados; `--dry-run` + 2 execuções reais em MySQL, a 2ª preservando contas e senhas |
 | I07 | README com PowerShell | `README.md` | Implementado | Revisado neste lote | Revisão humana |
-| I08 | Fluxo `dev` → validação → PR → `main` | `README.md` §7 | Aguarda autenticação do Git | Publicação autorizada, mas `git push --dry-run` falhou por falta de login; commits locais preservados | Conector tem escrita, porém não transfere os commits locais com autoria/data originais |
-| I09 | Tag da versão entregue | sem tags | Pendente após integração | `v1.0-entrega` deverá apontar para a versão integrada em `main` | — |
+| I08 | Fluxo `dev` → validação → PR → `main` | [PR #1](https://github.com/marconi-prog/lab-attendance-system/pull/1) | Rastreável no GitHub | `dev` publicada com os commits originais preservados; PR contém evidências e histórico da integração | Estado e SHA de merge verificáveis no próprio PR |
+| I09 | Tag da versão entregue | `v1.0-entrega` | Referência de versão | Criar somente sobre a versão integrada em `main` | Conferir a referência na [lista de tags](https://github.com/marconi-prog/lab-attendance-system/tags) antes do envio |
 | I10 | Declaração de uso de IA | `README.md` §9 | Implementado | Histórico anterior a 23/11/2026 registrado como desconhecido | Revisão da equipe |
 | I11 | Licença | `LICENSE`, `README.md` §11 | Implementado | MIT 2026 adicionada; copyright dos seis integrantes | — |
-| I12 | Identificação da equipe | `README.md` §10, `entrega.md` §1 | Parcial | Nomes e matrículas preenchidos; nome oficial, GitHub de 4 integrantes e módulos pendentes | — |
+| I12 | Identificação da equipe e colaboração | `README.md` §10, `entrega.md` §1 | Parcial | Nomes/matrículas preenchidos; somente Marconi (admin) e Sérgio (write) constam como colaboradores ativos | Proprietário deve conferir convites/adicionar os outros quatro; seus usuários GitHub e módulos ainda não foram informados |
 | I13 | Datas | `entrega.md` §3 | Sob responsabilidade do solicitante | Registradas sem cobrança de confirmação | — |
 | I14 | Enunciados originais | — | Pendente | Anexar PDFs ou links e reconferir a matriz | — |
 

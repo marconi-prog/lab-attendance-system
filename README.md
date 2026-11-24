@@ -246,7 +246,11 @@ nenhuma credencial no código (a aplicação não sobe sem os segredos no ambien
 3. **Pull request `dev` → `main`** no GitHub, com o resultado das validações e revisão de pelo menos um
    integrante que não seja o autor.
 4. **Merge em `main`** somente após aprovação — `main` é sempre a versão entregável. Sem push direto na `main`.
-5. **Tag** da versão entregue na `main` (nome a definir — pendente).
+5. **Tag `v1.0-entrega`** sobre a versão validada e integrada na `main`.
+
+A preparação desta entrega é rastreada pelo [PR #1](https://github.com/marconi-prog/lab-attendance-system/pull/1).
+Consulte o próprio PR e a [lista de tags](https://github.com/marconi-prog/lab-attendance-system/tags)
+para conferir a versão publicada antes do envio acadêmico.
 
 ## 8. Limitações conhecidas
 

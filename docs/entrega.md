@@ -12,28 +12,30 @@ Conformidade técnica e evidências de validação: [`conformidade.md`](conformi
 | Nome da equipe | Pendente | Identificação operacional: "Equipe lab-attendance-system" (**não** é nome oficial) |
 | Integrantes (nome completo) | **Preenchido** | Informados pelo solicitante (tabela abaixo) |
 | Matrículas | **Preenchido** | Informadas pelo solicitante, zeros à esquerda preservados |
-| Colaboradores no GitHub | Verificação incompleta | Conector confirma escrita para `DevNeto07`, mas a consulta específica de colaboradores retornou HTTP 403; o proprietário deve conferir os seis integrantes |
+| Colaboradores ativos no GitHub | **2 confirmados** | Consulta autenticada: `marconi-prog` (admin) e `DevNeto07` (write). Os outros quatro não aparecem na lista de ativos; convites pendentes não foram consultados |
 | Inscrição da equipe | Pendente | Ver §3 (datas alternativas) |
 
 | # | Nome | Matrícula | Usuário GitHub | Colaborador no repositório? | Módulo |
 |---|---|---|---|---|---|
 | 1 | Karllyson Paula | 01861379 | pendente | ☐ | a definir |
-| 2 | Marconi Farias Araújo | 01783919 | `marconi-prog` | ☐ | a definir |
+| 2 | Marconi Farias Araújo | 01783919 | `marconi-prog` | Sim — admin | a definir |
 | 3 | Gustavo Buled Martins | 01797483 | pendente | ☐ | a definir |
-| 4 | Sérgio Luiz dos Santos Neto | 01819969 | `DevNeto07` | ☐ | a definir |
+| 4 | Sérgio Luiz dos Santos Neto | 01819969 | `DevNeto07` | Sim — write | a definir |
 | 5 | Pedro Henrique Rodrigues da Silva | 01794091 | pendente | ☐ | a definir |
 | 6 | Janildo Caluête de Farias Júnior | 01799458 | pendente | ☐ | a definir |
 
 A ordem da tabela não indica divisão de módulos; os módulos previstos em `requirements.md` (Dev 1–6)
 ainda não foram atribuídos a integrantes.
+Marconi deve conferir/adicionar Karllyson, Gustavo, Pedro e Janildo usando seus usuários GitHub reais;
+o solicitante atual possui escrita, mas não administração para gerenciar esses convites.
 
 ## 2. URLs
 
 | Item | Valor | Situação |
 |---|---|---|
 | Repositório | https://github.com/marconi-prog/lab-attendance-system | Confirmado pelo `git remote` |
-| Pull request `dev` → `main` | — | Autorizado; aguarda publicação da `dev` pelo Git autenticado |
-| Tag/release da entrega | `v1.0-entrega` (prevista) | Após integração em `main`; ainda não criada |
+| Pull request `dev` → `main` | https://github.com/marconi-prog/lab-attendance-system/pull/1 | Registro da integração; consultar o estado e SHA no próprio PR |
+| Tag/release da entrega | `v1.0-entrega` | Referência da entrega, criada somente sobre a versão integrada; conferir em https://github.com/marconi-prog/lab-attendance-system/tags |
 | Demonstração online | — | Inexistente: demonstração prevista é local |
 | Vídeo ou slides | — | Pendente (se exigido) |
 | Swagger | `http://localhost:5000/api/docs` | Apenas local |
@@ -50,19 +52,18 @@ O solicitante declarou que cuidará das datas. Registro das informações recebi
 
 ## 4. Repositório: `dev`, `main` e tag
 
-Estado em 23/11/2026: `main` = `origin/main` (`4246e7d`); a `dev` local está **à frente** da `main`
-(commits `7710003`: seed; `6d723cd`: frontend/lint; `04f3849`: Docker; documentação em lote próprio)
-e não foi publicada. Autor dos novos commits: `DevNeto07 <sergiunetu@gmail.com>`, confirmado pelo solicitante.
-Push, PR, merge e tag: **autorização recebida**. A primeira tentativa sem autenticação falhou; a nova
-tentativa abriu a janela “Connect to GitHub” do gerenciador de credenciais e aguarda conclusão do login.
-Consulte `git log main..dev` para a lista completa dos commits locais preservados.
+O trabalho foi desenvolvido e publicado na `dev`, preservando os commits por lote e sua autoria:
+`DevNeto07 <sergiunetu@gmail.com>`, confirmada pelo solicitante. A integração é rastreada pelo
+[PR #1](https://github.com/marconi-prog/lab-attendance-system/pull/1), que é a fonte para conferir o estado
+do merge e seu SHA. A tag `v1.0-entrega` identifica a versão de entrega e deve apontar para a versão
+integrada em `main`. Nenhuma alteração foi atribuída artificialmente aos demais integrantes.
 
 - [x] Revisar e organizar as correções locais em commits por lote na `dev`
-- [ ] Publicar a `dev` no remoto — aguarda autenticação do Git (autorizado)
-- [ ] Pull request `dev` → `main` com as evidências de validação — após publicação (autorizado)
-- [ ] Revisão por pelo menos um integrante que não seja o autor
-- [ ] Merge em `main` — em andamento (autorizado)
-- [ ] Tag `v1.0-entrega` na versão integrada em `main` (autorizado)
+- [x] Publicar a `dev` no remoto
+- [x] Abrir o PR `dev` → `main` com as evidências de validação
+- [x] Revisão técnica e verificações pelo Codex, com implementação assistida pelo Claude Code
+- [ ] Antes do envio acadêmico, conferir no GitHub o PR #1 mesclado e a tag `v1.0-entrega`
+- [ ] Revisão adicional de outro integrante e conferência dos colaboradores ativos
 
 ## 5. Validação
 
