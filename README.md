@@ -276,10 +276,9 @@ para conferir a versão publicada antes do envio acadêmico.
 * **Histórico anterior** (incluindo os commits de 10/11/2026): o uso de IA é **desconhecido** — não há
   registro no repositório. A equipe deve completar esta declaração.
 
-## 10. Equipe
+## 10. Membros
 
-Identificação operacional: **Equipe lab-attendance-system** (não é o nome oficial da equipe, ainda não
-informado).
+Identificação operacional: **Nassau Ticket**
 
 | Nome | Matrícula |
 |---|---|
