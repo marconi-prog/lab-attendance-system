@@ -1,10 +1,11 @@
 # Validação do alinhamento — 27/11/2026
 
-Registro deste lote, separado dos resultados históricos de 23/11.
+Registro do primeiro lote de 27/11, separado dos resultados de 23/11 e anterior ao recebimento da
+especificação/edital. A revisão posterior está em [validacao-especificacao.md](validacao-especificacao.md).
 
 ## Fontes e ambiente
 
-- PDF da atividade (10 páginas) lido integralmente; especificação principal não localizada.
+- Naquele lote, somente o PDF da atividade (10 páginas) estava disponível; os dois restantes foram lidos na revisão posterior.
 - Docker Desktop, imagem Python 3.14, MySQL 8.0 em contêiner e rede de revisão próprios.
 - Banco exclusivo `attendance_conformidade_test`, descartável, sem uso do banco da aplicação.
 - Nenhum `.env` real foi usado como destino de testes. Segredos de revisão fora do repositório.
@@ -42,6 +43,6 @@ do banco desse Compose e de qualquer banco da aplicação anterior. Nenhum volum
 ## Pendências externas
 
 - Quatro colaboradores: depende do administrador Marconi e da aceitação dos convites.
-- PDF principal: falta confirmar horário de emissão e regra dos aproximadamente 5% de ausências.
+- PDF principal e edital recebidos posteriormente: pendência documental resolvida; ver [validação complementar](validacao-especificacao.md).
 - Datas, inscrição, Teams e apresentação: sob responsabilidade do solicitante.
 - Confirmação de áudio em 23/11 foi real, mas não substitui verificação no equipamento da apresentação.

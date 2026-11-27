@@ -29,6 +29,10 @@ Atribuição de papéis em 27/11/2026, autorizada pelo solicitante e detalhada n
 do README. Marconi, Sérgio e Pedro têm contribuições identificadas no histórico. Os papéis dos
 demais indicam responsabilidades a assumir; não comprovam trabalho anterior. A divisão dos seis
 módulos sugeridos em `requirements.md` continua independente desta atribuição de papéis.
+
+O checklist do edital (p. 7) pede histórico de todos os integrantes. Há contribuições identificadas
+de Marconi, Sérgio e Pedro; Karllyson, Gustavo e Janildo ainda precisam contribuir de verdade com
+documentação, código ou testes e fazer seus próprios commits. Não alterar autores nem inventar histórico.
 Marconi deve conferir/adicionar Karllyson, Gustavo, Pedro e Janildo usando seus usuários GitHub reais;
 o solicitante atual possui escrita, mas não administração para gerenciar esses convites.
 
@@ -46,6 +50,7 @@ histórico de commits/PRs, sozinho, não comprova participação como membro do 
 | Pull request do alinhamento ao PDF | https://github.com/marconi-prog/lab-attendance-system/pull/4 | Fonte do estado do merge, SHA e verificações deste lote |
 | Tag/release anterior | `v1.0-entrega` | Preservada em `5764743`; não inclui mudanças posteriores. Não foi movida nem apresentada como a revisão final deste lote |
 | Referência do alinhamento | `v1.0.1-entrega` | Publicar somente sobre a revisão integrada e validada; conferir existência e SHA na lista de tags |
+| Complemento da especificação/edital | `v1.0.2-entrega` | Referência posterior, publicada somente após validação e integração; manter tags anteriores |
 | Demonstração online | — | Inexistente: demonstração prevista é local |
 | Vídeo ou slides | — | Pendente (se exigido) |
 | Swagger | `http://localhost:5000/api/docs` | Apenas local |
@@ -91,7 +96,7 @@ integrada em `main`. Nenhuma alteração foi atribuída artificialmente aos dema
 - [x] Fluxo guiado das telas de totem, atendente, gestor e painel — ver `validacao-interface.md`
 - [x] Sinal e voz confirmados pelo solicitante durante as chamadas; repetir no equipamento da apresentação
 - [x] Conferir [`conformidade.md`](conformidade.md) contra o PDF da atividade, 10 páginas
-- [ ] Receber/conferir especificação principal para horário de emissão e interpretação dos 5%
+- [x] Ler especificação principal e edital de backend (8 páginas cada); emissão e chamadas 07h–17h; simulação separada do atendimento real
 
 As verificações acima foram feitas em 23/11, antes das alterações de perfis/Python.
 Resultados atuais ficam em [`validacao-conformidade.md`](validacao-conformidade.md).
@@ -101,7 +106,7 @@ Resultados atuais ficam em [`validacao-conformidade.md`](validacao-conformidade.
 | Pendência | Situação | Ação |
 |---|---|---|
 | PDF da atividade | **Lido (10 páginas)** | Estrutura, papéis e regras incorporados à matriz em 27/11 |
-| Especificação principal | **Não localizada** | Confirmar emissão às 6h e significado dos aproximadamente 5% de ausências |
+| Especificação principal e edital de backend | **Lidos integralmente** | Horários, simulação, campos em branco, recuperação, casos de uso e API versionada contemplados; ver `validacao-especificacao.md` |
 | Licença MIT | **Adicionada** (`LICENSE`, 2026, os seis integrantes) | — |
 | Declaração de uso de IA | Redigida no README §9 | Equipe completar o histórico anterior a 23/11/2026 |
 | Identificação da equipe | Nome, integrantes, matrículas e papéis preenchidos | Confirmar contas de Karllyson/Gustavo/Janildo e acesso dos quatro restantes |
@@ -114,7 +119,7 @@ Resultados atuais ficam em [`validacao-conformidade.md`](validacao-conformidade.
 1. `flask db upgrade` e `flask seed` (guichês 01–05).
 2. `flask seed-demo --dry-run` e `flask seed-demo --confirm-demo` (gestor e atendente com permissão no
    guichê 01; senhas digitadas no terminal). O comando **não** emite senhas de atendimento.
-3. Totem (`/totem`): emitir SG, SG, SE, SP, SP — emissão das **06:00 às 17:00** (America/Recife).
+3. Totem (`/totem`): emitir SG, SG, SE, SP, SP — emissão das **07:00 às 17:00** (America/Recife).
 4. Atendente: login, escolher o guichê, **Chamar próxima** — chamadas das **07:00 às 17:00**. Painel
    (`/panel`, clique para liberar o áudio) anuncia na ordem SP → SE → SP → SG.
 5. Repetir chamada e registrar ausência.

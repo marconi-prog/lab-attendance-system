@@ -24,6 +24,10 @@ Documentação: [`docs/architecture.md`](docs/architecture.md) · [`docs/databas
 Artefatos da atividade: [identidade visual](docs/branding/README.md), [MER](docs/mer/README.md),
 [mockups](docs/mockups/README.md), [UML](docs/models/uml/README.md) e
 [requisitos e regras](docs/requirements/README.md).
+Complementos do edital: [casos de uso](docs/models/uml/casos-de-uso.md),
+[backup e recuperação](docs/recuperacao.md) e [validação dos PDFs](docs/validacao-especificacao.md).
+API REST v1 em `/api/v1`, Swagger em `/api/v1/docs`; os aliases `/api` continuam compatíveis
+com o frontend existente.
 
 **Objetivo:** organizar emissão e atendimento de senhas do laboratório, com prioridade, rastreabilidade
 e indicadores. **Escolha do backend:** Flask permite separar rotas, serviços e persistência sem
@@ -43,7 +47,7 @@ blocos recolhíveis.
 | Painel (público) | Senha chamada, 5 últimas chamadas, próximas por fila, atualização em tempo real (Socket.IO), sinal sonoro e voz `pt-BR` |
 | Atendente (`ATTENDANT`) | Escolher guichê autorizado; chamar próxima (ciclo SP → SE/SG → SP); repetir chamada; iniciar e finalizar atendimento; registrar ausência após a 2ª chamada |
 | Gestor (`ADMIN`) | Atendimento nos guichês autorizados, além de indicadores, relatórios, usuários, guichês, auditoria e encerramento do expediente; somente um gestor ativo |
-| Sistema | Expediente (America/Recife): emissão 06:00–17:00, chamadas 07:00–17:00, encerramento automático às 17:00; JWT com refresh e revogação; OpenAPI/Swagger |
+| Sistema | Expediente (America/Recife): emissão 07:00–17:00, chamadas 07:00–17:00, encerramento automático às 17:00; JWT com refresh e revogação; OpenAPI/Swagger |
 
 ## 2. Execução rápida com Docker (recomendado)
 
@@ -98,7 +102,7 @@ entre as áreas mantém a sessão; **Sair do guichê** a encerra quando não há
 > O Compose sobe o backend com `FLASK_ENV=production`; por isso o comando de demonstração
 > `flask seed-demo` (§3.4) é **recusado** no Docker. Use `create-admin` + cadastro pela interface.
 
-> Fora do horário (emissão 06h–17h, chamadas 07h–17h, America/Recife) as operações são bloqueadas.
+> Fora do horário (emissão 07h–17h, chamadas 07h–17h, America/Recife) as operações são bloqueadas.
 > Para demonstrar fora do expediente, use `ENFORCE_BUSINESS_HOURS=false` no `.env` e rode
 > `docker compose up -d` novamente. Não use essa opção em produção.
 
@@ -201,7 +205,15 @@ Garantias:
   espaços nas pontas, sem conter o identificador do e-mail e diferentes entre gestor e atendente.
 * **Transação atômica**: guichês, contas, permissões e auditoria (`DEMO_SEED_*`) são gravados juntos ou nada é gravado.
 * **Não emite senhas de atendimento**: ao final o comando imprime o roteiro — emitir pelo totem
-  (06:00–17:00) e chamar pelo atendente (07:00–17:00), conforme os horários configurados.
+  (07:00–17:00) e chamar pelo atendente (07:00–17:00), conforme os horários configurados.
+
+### 3.5 Simulação dos tempos e dos 5% de ausências
+
+O edital pede um cenário simulado: SP 10–20min, SG 2–8min e SE 1min em95% dos casos/5min em5%.
+Em desenvolvimento, `flask simulate-attendance --confirm-demo --tickets 100 --seed 42 --date 2026-11-27`
+gera um relatório JSON sintético, sem acessar ou alterar o banco. Atendimento real mantém tempos
+medidos e ausências confirmadas, sem descarte aleatório. Veja [comandos e garantias](docs/simulacao.md),
+incluindo execução em um container separado sem migrations/seed.
 
 ## 4. Testes
 
@@ -231,7 +243,7 @@ ficaram saudáveis e o fluxo de atendimento passou via API. A nova execução co
 O fluxo guiado das telas foi verificado e o solicitante confirmou sinal e voz. Veja o
 [`registro da interface`](docs/validacao-interface.md). Esses resultados são históricos; a validação
 do lote de 27/11/2026 é registrada separadamente em [`docs/validacao-conformidade.md`](docs/validacao-conformidade.md).
-O PDF da atividade foi conferido; falta o PDF principal para resolver horário de emissão e regra dos 5%.
+Os três documentos foram lidos: atividade, especificação principal e edital de backend. Horários e simulação foram alinhados ao edital; veja [a validação complementar](docs/validacao-especificacao.md).
 
 ## 5. Estrutura
 
@@ -268,6 +280,9 @@ O alinhamento ao PDF e os ajustes de gestor/Python são rastreados pelo
 [PR #4](https://github.com/marconi-prog/lab-attendance-system/pull/4). A tag anterior `v1.0-entrega`
 é preservada em `5764743`; a referência deste lote é `v1.0.1-entrega`, publicada somente após
 validação e integração. Consulte as referências no GitHub para verificar sua existência e estado.
+O complemento após leitura da especificação principal e do edital está em
+[validação complementar](docs/validacao-especificacao.md), com referência de entrega
+`v1.0.2-entrega` após integração; as duas tags anteriores são preservadas.
 Consulte o próprio PR e a [lista de tags](https://github.com/marconi-prog/lab-attendance-system/tags)
 para conferir a versão publicada antes do envio acadêmico.
 
@@ -282,8 +297,11 @@ para conferir a versão publicada antes do envio acadêmico.
 * Socket.IO em 1 worker (escalar exige Redis como `message_queue`); sem rate limit no totem; na web os
   tokens ficam em `sessionStorage` (ver riscos em [`docs/architecture.md`](docs/architecture.md)).
 * Pela leitura literal da regra, SE tem preferência sobre SG após SP, o que pode atrasar SG.
-* O PDF da atividade foi lido (10 páginas); o PDF principal ainda não foi fornecido/localizado.
-  A emissão às 6h e a interpretação dos aproximadamente 5% de ausências dependem desse documento.
+* A simulação acadêmica de tempos e ausências é isolada; os atendimentos reais mantêm tempos medidos e não sofrem descarte aleatório.
+* Backup e restauração de verificação estão documentados e possuem scripts; agendamento, armazenamento
+  externo criptografado e failover não são automatizados. Consulte [recuperação](docs/recuperacao.md).
+* Swagger UI carrega recursos de CDN; sem internet usar o JSON OpenAPI local. O plano de
+  apresentação offline está no documento de recuperação.
 * Expo Web, o nome do repositório e a previsão de próximas senhas foram aceitos pelo solicitante.
   A previsão diverge da p. 5 da atividade; não há registro escrito de dispensa pelo professor.
 * A migration de gestor único recusa bases com múltiplos gestores ativos, preservando os dados.
@@ -296,6 +314,10 @@ para conferir a versão publicada antes do envio acadêmico.
 * **Conferência do PDF e alinhamento em 27/11/2026:** Codex organizou artefatos, infraestrutura,
   matriz e validações; Claude Code auxiliou na implementação dos perfis e testes. Os papéis da equipe
   foram atribuídos pelo solicitante; não foram criados commits em nome de outros integrantes.
+* **Especificação principal e edital recebidos depois:** Codex conferiu os dois PDFs completos e
+  implementou alinhamento de horários, API v1, casos de uso e backup/restauração; Claude Code
+  auxiliou no simulador acadêmico e no ajuste do relatório de senhas não atendidas. A equipe continua
+  responsável por compreender o código e por suas próprias contribuições reais.
 * **Preparação acadêmica iniciada em 23/11/2026:** o **Codex** (OpenAI) coordena as tarefas e o
   **Claude Code** (Anthropic) auxilia na execução. Neste lote, o Claude Code redigiu
   `docs/conformidade.md`, `docs/entrega.md` e esta revisão do README, e implementou o comando

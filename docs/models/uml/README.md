@@ -1,5 +1,7 @@
 # Diagramas UML
 
+Veja também os [casos de uso](casos-de-uso.md), com atores, pré-condições, fluxo e alternativas.
+
 ## Estados da senha
 
 Fonte: [`TicketStateMachine`](../../../backend/app/services/state_machine.py).
