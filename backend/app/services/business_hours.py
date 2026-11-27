@@ -27,6 +27,11 @@ class BusinessHours:
         return cls._cfg("BUSINESS_CLOSE_TIME")
 
     @classmethod
+    def issue_open_time(cls) -> time:
+        # Configurações antigas de emissão às 06h não podem antecipar o expediente.
+        return max(cls.open_time(), cls._cfg("TICKET_ISSUE_OPEN_TIME"))
+
+    @classmethod
     def is_calling_allowed(cls, at: datetime | None = None) -> bool:
         if not cls.enforced():
             return True
@@ -38,7 +43,7 @@ class BusinessHours:
         if not cls.enforced():
             return True
         current = (at or local_now()).time()
-        return cls._cfg("TICKET_ISSUE_OPEN_TIME") <= current < cls.close_time()
+        return cls.issue_open_time() <= current < cls.close_time()
 
     @classmethod
     def is_after_close(cls, at: datetime | None = None) -> bool:
@@ -65,7 +70,7 @@ class BusinessHours:
         return {
             "open": f"{cls.open_time():%H:%M}",
             "close": f"{cls.close_time():%H:%M}",
-            "issue_open": f"{cls._cfg('TICKET_ISSUE_OPEN_TIME'):%H:%M}",
+            "issue_open": f"{cls.issue_open_time():%H:%M}",
             "enforced": cls.enforced(),
             "timezone": cls._cfg("TIMEZONE"),
             "calling_allowed_now": cls.is_calling_allowed(),

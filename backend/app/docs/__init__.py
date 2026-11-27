@@ -163,7 +163,11 @@ def build_openapi() -> dict:
     paths: dict[str, dict] = {}
     for spec in REGISTRY:
         for method in spec.methods:
-            paths.setdefault(spec.path, {})[method.lower()] = _operation(spec, method, components, TAGS)
+            operation = _operation(spec, method, components, TAGS)
+            paths.setdefault(spec.path, {})[method.lower()] = operation
+            versioned = copy.deepcopy(operation)
+            versioned["operationId"] = "v1_" + operation["operationId"]
+            paths.setdefault(spec.path.replace("/api", "/api/v1", 1), {})[method.lower()] = versioned
     return {
         "openapi": "3.1.0",
         "info": {

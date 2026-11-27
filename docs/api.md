@@ -1,6 +1,7 @@
 # API REST
 
-Base: `http://localhost:5000/api` · Swagger: `/api/docs` · OpenAPI JSON: `/api/docs/openapi.json`
+Base canônica: `http://localhost:5000/api/v1`; alias compatível: `/api`.
+Swagger: `/api/v1/docs` ou `/api/docs` · OpenAPI JSON: `/api/v1/docs/openapi.json`.
 (gerado do próprio código — sempre atualizado).
 
 * JSON em UTF-8; corpos com campos desconhecidos são rejeitados (422).
@@ -156,3 +157,11 @@ const staff = io('http://localhost:5000/staff', { auth: { token: accessToken } }
 staff.on('queue:updated', (q) => console.log(q.waiting));
 ```
 Payloads de `ticket:called`/`ticket:recalled` = resposta de `call-next`. `panel:updated` = resposta de `GET /api/panel`.
+
+## Versão do contrato
+
+A API REST possui prefixo canônico `/api/v1`; os caminhos `/api` descritos abaixo permanecem
+como aliases compatíveis com o frontend existente, com a mesma autenticação, regras e transações.
+Exemplo: `/api/v1/tickets` e `/api/tickets` compartilham a sequência diária; não são filas distintas.
+Swagger em `/api/v1/docs` (também `/api/docs`) e OpenAPI em `/api/v1/docs/openapi.json`.
+O documento publica ambos os prefixos com identificadores de operação únicos.

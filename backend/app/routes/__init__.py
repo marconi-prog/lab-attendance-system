@@ -144,9 +144,12 @@ BLUEPRINTS = [system_bp, auth_bp, tickets_bp, attendant_bp, users_bp, counters_b
 def register_routes(app: Flask) -> None:
     for bp in BLUEPRINTS:
         app.register_blueprint(bp)
+        # API v1 canônica; aliases /api mantêm clientes existentes compatíveis.
+        app.register_blueprint(bp, name=f"{bp.name}_v1", url_prefix=bp.url_prefix.replace("/api", "/api/v1", 1))
     from app.docs import docs_bp
 
     app.register_blueprint(docs_bp)
+    app.register_blueprint(docs_bp, name="docs_v1", url_prefix="/api/v1/docs")
 
 
 __all__ = ["AUTHENTICATED", "register_routes"]

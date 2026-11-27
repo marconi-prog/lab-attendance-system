@@ -26,7 +26,7 @@ def test_announcement_texts():
 
 @pytest.mark.parametrize(
     "hhmm, calling, issuing",
-    [("05:59", False, False), ("06:00", False, True), ("06:59", False, True), ("07:00", True, True),
+    [("05:59", False, False), ("06:00", False, False), ("06:59", False, False), ("07:00", True, True),
      ("12:00", True, True), ("16:59", True, True), ("17:00", False, False), ("23:00", False, False)],
 )
 def test_business_hours(app, hhmm, calling, issuing):

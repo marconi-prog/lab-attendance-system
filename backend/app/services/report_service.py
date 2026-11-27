@@ -240,8 +240,11 @@ class ReportService:
             calls = t.calls
             last_call = calls[-1] if calls else None
             att = t.attendance
-            attendant = att.user if att else (last_call.user if last_call else None)
-            counter = att.counter if att else (last_call.counter if last_call else None)
+            # Campos de ATENDIMENTO vêm apenas de Attendance: senha nunca atendida (não compareceu,
+            # aguardando, descartada ou só chamada) fica sem início/fim/duração/guichê/atendente.
+            # As chamadas continuam em first_called_at/last_called_at/call_count.
+            attendant = att.user if att else None
+            counter = att.counter if att else None
             rows.append(
                 {
                     "ticket_id": t.id,

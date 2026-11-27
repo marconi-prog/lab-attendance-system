@@ -70,7 +70,7 @@ A origem (`Origin`) do handshake é validada contra `CORS_ORIGINS`. Em produçã
 
 ### Expediente
 
-* Chamadas: 07:00–17:00 (America/Recife). Emissão: 06:00–17:00.
+* Chamadas: 07:00–17:00 (America/Recife). Emissão: 07:00–17:00, conforme edital §5.1. Configuração legada de emissão às 6h não antecipa o início do expediente.
 * Às 17:00 o agendador (thread a cada 60 s) descarta as senhas `AGUARDANDO` do dia e marca o dia como
   encerrado; também descarta pendências de dias anteriores. Senhas já chamadas/em atendimento podem ser
   concluídas (iniciar, finalizar, repetir e registrar ausência continuam permitidos).

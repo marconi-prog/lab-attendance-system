@@ -29,7 +29,7 @@ class HealthOut(BaseModel):
 class BusinessHoursOut(BaseModel):
     open: str = Field(examples=["07:00"])
     close: str = Field(examples=["17:00"])
-    issue_open: str = Field(examples=["06:00"])
+    issue_open: str = Field(examples=["07:00"])
     enforced: bool
     timezone: str = Field(examples=["America/Recife"])
     calling_allowed_now: bool

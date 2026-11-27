@@ -12,6 +12,12 @@ backend/.venv/
 .coverage
 htmlcov/
 
+# Backups podem conter dados pessoais e credenciais de usuarios (hashes).
+/backups/
+/database/backups/
+*.sql.gz
+*.sql.enc
+
 # Node / Expo
 node_modules/
 frontend/dist/

@@ -8,7 +8,10 @@ um campo calculado limita a um gestor ativo; migration recusa dados conflitantes
 
 **Restrições:** preservar contas, licença, autoria e alterações existentes; não mover tag publicada;
 nome, Expo e previsões no painel aceitos pelo solicitante. Datas sob responsabilidade do solicitante.
-PDF principal ainda não localizado: não inventar interpretação de 5% nem alteração de horários.
+Na preparação inicial o PDF principal não estava disponível. Posteriormente foram recebidos e
+lidos a especificação e o edital: emissão/chamadas 07h–17h, simulação sintética de tempos/ausências,
+campos de atendimento em branco para ausentes, casos de uso, API v1 e backup/restauração.
+Validação complementar em `docs/validacao-especificacao.md`; não forçar descarte no atendimento real.
 
 - [x] Confirmar equipe e colaboradores por API autenticada; registrar limites administrativos.
 - [x] Implementar gestor/atendente e unicidade com testes de regressão e migration não destrutiva.
