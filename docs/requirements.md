@@ -4,8 +4,9 @@
 
 | Agente | Perfil | Acesso |
 |---|---|---|
-| AS — Agente Sistema | ADMIN | Usuários, guichês, relatórios, auditoria, informações do sistema |
+| AS — Agente Sistema | aplicação / infraestrutura | Persistência, emissão, fila, atualização do painel e execução dos comandos |
 | AA — Agente Atendente | ATTENDANT | Guichê autorizado, chamar/repetir/iniciar/finalizar/ausência |
+| AA com perfil adicional de gestor | ADMIN | Atendimento autorizado e administração (cadastros, relatórios, auditoria); um gestor ativo |
 | AC — Agente Cliente | sem login | Emissão de senha no totem |
 
 ## Rastreabilidade (requisito → implementação → teste)
@@ -20,12 +21,14 @@
 | Iniciar/finalizar, duração | `AttendanceService.start/finish` | `test_start_and_finish` |
 | Ausência após duas chamadas | `recall` + `no_show` | `test_no_show_after_two_calls_releases_queue`, `test_third_call_is_not_allowed` |
 | Histórico de chamadas imutável | tabela `calls` (`UNIQUE(ticket_id, attempt_number)`) | `test_recall_creates_new_call_record` |
-| Painel: 5 últimas, só chamadas, tempo real, áudio | `PanelService`, namespace `/panel`, `useAnnouncer` | `test_panel_realtime.py`; áudio/telas: validação manual pendente (sem E2E automatizado) |
+| Painel: 5 últimas chamadas, tempo real, áudio; previsão aceita pelo solicitante | `PanelService`, namespace `/panel`, `useAnnouncer` | `test_panel_realtime.py`; validação manual histórica em `validacao-interface.md` (sem E2E automatizado) |
 | Expediente 07–17h, encerramento, America/Recife | `BusinessHours`, `DayClosingService`, `scheduler.py` | `test_business_hours`, `test_calls_blocked_outside_business_hours`, `test_day_closing_*`, `test_scheduled_closing*` |
 | JWT access/refresh, revogação, hash | `AuthService`, `middlewares/auth.py` | `test_auth.py` |
-| Autorização por perfil | `roles_required` via `api_route` | `test_anonymous_is_rejected`, `test_attendant_cannot_access_admin`, `test_admin_cannot_operate_counter` |
+| Autorização por perfil e gestor com atendimento autorizado | `roles_required` via `api_route` | `test_anonymous_is_rejected`, `test_attendant_cannot_access_admin`; regressões do gestor no lote de 27/11 |
 | Relatórios diário/mensal/período, filtros | `ReportService` (agregações SQL) | `test_reports.py` |
 | Auditoria | `AuditService` (mesma transação) | `test_audit_log`, `test_login_is_audited_without_password` |
+
+Requisitos do PDF, exceções e interpretações pendentes: [catálogo atualizado](requirements/README.md).
 
 ### Interpretações adotadas
 

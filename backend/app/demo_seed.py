@@ -13,6 +13,8 @@ Garantias:
 * **nunca apaga, sobrescreve nem redefine senhas**: uma conta existente
   incompatível (perfil, situação ou permissões diferentes) ou um guichê
   inativo abortam a execução antes de qualquer gravação;
+* **gestor ativo único**: se já houver outro gestor ativo, a execução é
+  abortada sem alterar nada (nenhuma conta é desativada ou rebaixada);
 * **senhas fora do código**: lidas de ``DEMO_MANAGER_PASSWORD`` /
   ``DEMO_ATTENDANT_PASSWORD`` ou digitadas (getpass, com confirmação), e
   pedidas somente para contas que serão criadas;
@@ -40,6 +42,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db
 from app.models import Counter, User, UserRole
+from app.models.user import is_active_manager_conflict
 from app.repositories import UserRepository
 from app.schemas.common import Email
 from app.schemas.user import validate_password_strength
@@ -169,6 +172,14 @@ def build_plan(specs: list[AccountSpec], counter_numbers: tuple[int, ...]) -> Pl
     for spec in specs:
         user = UserRepository.get_by_email(spec.email)
         if user is None:
+            other_manager = UserRepository.active_manager() if spec.role == UserRole.ADMIN else None
+            if other_manager:
+                plan.problems.append(
+                    f"Já existe outro gestor ativo ({other_manager.email}); o sistema permite apenas um gestor ativo "
+                    "e o seed-demo não desativa nem rebaixa contas. "
+                    f"Para reaproveitá-lo, use --manager-email {other_manager.email}."
+                )
+                continue
             plan.accounts_to_create.append(spec.key)
             continue
         issues = []
@@ -232,6 +243,10 @@ def apply_plan(
     try:
         return run_in_transaction(tx)
     except IntegrityError as exc:  # corrida com outra execução/cadastro simultâneo
+        if is_active_manager_conflict(exc):
+            raise click.ClickException(
+                f"Outro gestor ativo foi cadastrado durante a execução; o sistema permite apenas um gestor ativo. {NO_CHANGES}"
+            ) from exc
         raise click.ClickException(f"Conflito de unicidade (e-mail ou número de guichê). {NO_CHANGES}") from exc
 
 

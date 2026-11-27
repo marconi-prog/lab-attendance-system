@@ -1,9 +1,10 @@
 import { router, Slot, usePathname, type Href } from 'expo-router';
-import { BarChart3, LayoutDashboard, MonitorSmartphone, ScrollText, Users } from 'lucide-react-native';
+import { BarChart3, BellRing, LayoutDashboard, MonitorSmartphone, ScrollText, Users } from 'lucide-react-native';
 import type { LucideIcon } from 'lucide-react-native';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { AppHeader } from '@/components/AppHeader';
+import { Button } from '@/components/Button';
 import { ConnectionDot } from '@/components/ConnectionDot';
 import { useStaffSocket } from '@/hooks/useStaffSocket';
 import { colors, radius, spacing } from '@/theme';
@@ -24,6 +25,8 @@ export default function ManagerLayout() {
     <View style={styles.screen}>
       <AppHeader title="Gestão">
         <ConnectionDot connected={connected} />
+        {/* O gestor também atende, nos guichês autorizados a ele (Usuários › Guichês autorizados). */}
+        <Button title="Atendimento" icon={BellRing} variant="secondary" size="sm" onPress={() => router.push('/attendant')} />
       </AppHeader>
       <View style={styles.navWrap}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.nav}>

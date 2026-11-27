@@ -110,22 +110,31 @@ def test_login_is_audited_without_password(client, make_user, app):
 ADMIN_ONLY = [
     ("get", "/api/users"),
     ("post", "/api/users"),
+    ("get", "/api/users/1"),
+    ("patch", "/api/users/1"),
+    ("put", "/api/users/1/counters"),
     ("get", "/api/reports/summary"),
+    ("get", "/api/reports/daily"),
+    ("get", "/api/reports/monthly"),
     ("get", "/api/reports/attendances"),
     ("get", "/api/admin/dashboard"),
     ("get", "/api/admin/audit-logs"),
     ("get", "/api/admin/system"),
     ("post", "/api/counters"),
+    ("patch", "/api/counters/1"),
+    ("get", "/api/counters/sessions"),
+    ("delete", "/api/counters/sessions/1"),
     ("post", "/api/admin/close-day"),
 ]
-ATTENDANT_ONLY = [
+# Atendimento: atendentes e o gestor (que também atende), sempre limitado aos guichês autorizados.
+ATTENDANCE = [
     ("post", "/api/attendant/call-next"),
     ("get", "/api/attendant/state"),
     ("post", "/api/attendant/session"),
 ]
 
 
-@pytest.mark.parametrize("method, url", ADMIN_ONLY + ATTENDANT_ONLY)
+@pytest.mark.parametrize("method, url", ADMIN_ONLY + ATTENDANCE)
 def test_anonymous_is_rejected(client, method, url):
     assert getattr(client, method)(url, json={}).status_code == 401
 
@@ -138,9 +147,14 @@ def test_attendant_cannot_access_admin(client, make_user, method, url):
     assert response.json["error"]["code"] == "FORBIDDEN"
 
 
-@pytest.mark.parametrize("method, url", ATTENDANT_ONLY)
-def test_admin_cannot_operate_counter(client, admin_headers, method, url):
-    assert getattr(client, method)(url, json={}, headers=admin_headers).status_code == 403
+def test_manager_without_assigned_counter_cannot_operate(client, admin_headers, make_counter):
+    counter_id = make_counter()
+    assert client.get("/api/attendant/state", headers=admin_headers).status_code == 200
+    assert client.get("/api/attendant/counters", headers=admin_headers).json["items"] == []
+    opened = client.post("/api/attendant/session", json={"counter_id": counter_id}, headers=admin_headers)
+    assert opened.status_code == 403 and opened.json["error"]["code"] == "COUNTER_NOT_AUTHORIZED"
+    called = client.post("/api/attendant/call-next", headers=admin_headers)
+    assert called.status_code == 422 and called.json["error"]["code"] == "NO_COUNTER_SESSION"
 
 
 def test_public_endpoints(client):

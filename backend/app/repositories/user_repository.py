@@ -29,6 +29,15 @@ class UserRepository:
         return stmt
 
     @staticmethod
+    def active_manager(*, exclude_id: int | None = None) -> User | None:
+        """Gestor (ADMIN) ativo, opcionalmente ignorando um usuário. Verificação amigável;
+        a garantia definitiva é o índice único ``uq_users_active_manager_slot``."""
+        stmt = select(User).where(User.role == UserRole.ADMIN, User.active.is_(True)).order_by(User.id)
+        if exclude_id is not None:
+            stmt = stmt.where(User.id != exclude_id)
+        return db.session.scalars(stmt).first()
+
+    @staticmethod
     def count_active_admins() -> int:
         return db.session.scalar(
             select(func.count(User.id)).where(User.role == UserRole.ADMIN, User.active.is_(True))

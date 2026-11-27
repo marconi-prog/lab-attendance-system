@@ -15,16 +15,17 @@ a mesma senha e o ciclo é respeitado mesmo sob concorrência.
 from __future__ import annotations
 
 from flask import current_app
+from sqlalchemy import select
 
 from app.extensions import db
-from app.models import Call, CounterSession, Ticket, TicketStatus, TicketType
-from app.repositories import TicketRepository
+from app.models import Call, Counter, CounterSession, Ticket, TicketStatus, TicketType, User, UserRole, user_counters
+from app.repositories import CounterRepository, TicketRepository
 from app.services.audit_service import AuditService
 from app.services.business_hours import BusinessHours
 from app.services.state_machine import TicketStateMachine
 from app.utils.clock import local_today, utcnow
 from app.utils.db import run_in_transaction
-from app.utils.errors import BusinessRuleError, ConflictError
+from app.utils.errors import BusinessRuleError, ConflictError, PermissionDenied
 
 AFTER_PRIORITY = (TicketType.SE, TicketType.SG, TicketType.SP)
 AFTER_REGULAR = (TicketType.SP, TicketType.SE, TicketType.SG)
@@ -64,8 +65,32 @@ class QueueService:
         today = local_today()
         TicketRepository.ensure_queue_state(today)
         counter_id = session.counter_id
+        session_id = session.id
 
         def tx() -> tuple[Ticket, Call]:
+            # Mesma trava usada para revogar guichê/desativar usuário. A ordem é
+            # Counter -> QueueState -> Ticket, mantida até o commit da chamada.
+            CounterRepository.get_for_update(counter_id)
+            authorized_session = db.session.scalar(
+                select(CounterSession.id)
+                .join(User, User.id == CounterSession.user_id)
+                .join(Counter, Counter.id == CounterSession.counter_id)
+                .join(user_counters, (user_counters.c.user_id == User.id) & (user_counters.c.counter_id == Counter.id))
+                .where(
+                    CounterSession.id == session_id,
+                    CounterSession.user_id == user_id,
+                    CounterSession.counter_id == counter_id,
+                    CounterSession.closed_at.is_(None),
+                    User.active.is_(True),
+                    User.role.in_((UserRole.ADMIN, UserRole.ATTENDANT)),
+                    Counter.active.is_(True),
+                )
+            )
+            if authorized_session is None:
+                raise PermissionDenied(
+                    "A sessão foi encerrada ou o acesso ao guichê foi removido. Selecione um guichê autorizado.",
+                    code="COUNTER_NOT_AUTHORIZED",
+                )
             state = TicketRepository.lock_queue_state(today)
             # Verificado após o bloqueio: um duplo clique não reserva duas senhas.
             active = TicketRepository.active_ticket_for_counter(counter_id)

@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
-import { Chips } from '@/components/Chips';
+import { Chips, type ChipOption } from '@/components/Chips';
 import { ErrorBanner, Loading, SuccessBanner } from '@/components/Feedback';
 import { FormField, PlainField } from '@/components/FormField';
 import { Pagination } from '@/components/Pagination';
@@ -80,6 +80,12 @@ function UserForm({ editing, counters, onDone }: { editing: User | null; counter
     }
   });
 
+  // Apenas um gestor ativo é permitido (a API recusa outro com 409); a opção só aparece para quem já é ADMIN.
+  const roleOptions: ChipOption<UserRole>[] = [
+    { value: 'ATTENDANT', label: 'Atendente' },
+    ...(editing?.role === 'ADMIN' ? [{ value: 'ADMIN' as const, label: 'Gestor (admin)' }] : []),
+  ];
+
   return (
     <Card title={editing ? `Editar: ${editing.name}` : 'Novo usuário'}>
       <ErrorBanner message={error} />
@@ -91,10 +97,12 @@ function UserForm({ editing, counters, onDone }: { editing: User | null; counter
       <Controller
         control={control}
         name="role"
-        render={({ field }) => (
-          <Chips<UserRole> label="Perfil" value={field.value} onChange={field.onChange} options={[{ value: 'ATTENDANT', label: 'Atendente' }, { value: 'ADMIN', label: 'Gestor (admin)' }]} />
-        )}
+        render={({ field }) => <Chips<UserRole> label="Perfil" value={field.value} onChange={field.onChange} options={roleOptions} />}
       />
+      <Text style={styles.hint}>
+        O sistema permite apenas um gestor ativo. O gestor também atende: autorize guichês para ele aqui e use o botão
+        “Atendimento” no topo.
+      </Text>
       <Controller control={control} name="counter_ids" render={({ field }) => <CounterSelector counters={counters} value={field.value} onChange={field.onChange} />} />
       <View style={styles.wrap}>
         <Button title={editing ? 'Salvar alterações' : 'Criar usuário'} icon={UserPlus} loading={formState.isSubmitting} onPress={() => void submit()} />
@@ -171,4 +179,5 @@ const styles = StyleSheet.create({
   content: { padding: spacing.xl, gap: spacing.lg, maxWidth: 1280, width: '100%', alignSelf: 'center' },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   label: { fontSize: 13, fontWeight: '600', color: colors.text, borderRadius: radius.sm },
+  hint: { fontSize: 12, color: colors.textMuted },
 });

@@ -1,11 +1,54 @@
 # Matriz de conformidade
 
-Situação em **23/11/2026**, preparada no lote inicial de preparação acadêmica (branch `dev`).
+Conferência atual: **27/11/2026**, PDF **Atividade — Sistema para controle de atendimento.pdf**,
+10 páginas, fornecido pelo solicitante. A especificação principal e o edital completo de backend
+não foram localizados; não se declara conformidade integral com documentos não lidos.
 
-> **Limite desta matriz.** Os enunciados originais (PDFs) **não estão disponíveis** no repositório nem
-> foram fornecidos nesta preparação. Os requisitos abaixo foram derivados de
-> [`requirements.md`](requirements.md), [`architecture.md`](architecture.md) e do código e precisam ser
-> conferidos contra os enunciados oficiais quando forem anexados.
+## Situação atual após a leitura da atividade
+
+| Exigência | Fonte | Evidência / situação |
+|---|---|---|
+| Repositório público, MIT, .gitignore Node | pp. 1, 8–9 | GitHub público, `LICENSE` e `.gitignore` preservados |
+| Nome nassauTickets | p. 1 | Nome existente aceito pelo solicitante; não renomeado |
+| Seis membros, matrículas e papéis | pp. 1–2, 8 | Seção exata `## Membros` no README; Marconi é o único Scrum Master |
+| Todos como colaboradores | pp. 1–2 | **Pendente externo:** API autenticada em 27/11 confirma somente Marconi e Sérgio; faltam os outros quatro |
+| Estrutura obrigatória | pp. 2–3 | `backend/`, `frontend/`, `docs/{branding,mer,mockups,models/uml,requirements}` com artefatos; sem .gitkeep desnecessário |
+| Documentação e artefatos | p. 3 | MER/UML em Mermaid, wireframes HTML, identidade e catálogo de requisitos derivados do código |
+| Segurança, disponibilidade, LGPD e acessibilidade | p. 3 | `requirements/README.md` explicita implementação e limites; sem SLA ou certificação inventados |
+| Agentes AS, AA e AC | pp. 3–4 | AS é aplicação/infraestrutura; AA é atendente, com gestor adicional; AC é anônimo |
+| Tipos, numeração e prioridade | p. 4 | `TicketService`, `QueueService`; sequência por dia/categoria e bloqueios InnoDB |
+| Duas chamadas e estados | pp. 4–5 | `TicketStateMachine`, `recall`, `no_show`; ausência após segunda chamada |
+| Aproximadamente 5% não atendidas | p. 4 | **Pendente de especificação:** falta PDF principal; não há ausência ou descarte aleatório forçado |
+| Expediente e encerramento | p. 4 | Chamadas 07h–17h e descarte de aguardando; **emissão 06h–17h depende do PDF principal** |
+| Cinco últimas chamadas | p. 5 | `PanelService.latest`, limite 5 |
+| Não mostrar próxima senha | p. 5 | **Exceção aceita pelo solicitante:** previsões mantidas; sem registro escrito de dispensa pelo professor |
+| Relatórios e auditoria | pp. 5–6 | `ReportService`, chamadas, atendente, guichê, início/fim e agregações |
+| Atendente com perfil adicional de gestor | p. 6 | ADMIN acumula atendimento autorizado e administração; um gestor ativo com proteção no banco e migration que preserva contas |
+| Concorrência, métricas, voz e última chamada | p. 6 | Bloqueios, relatórios por atendente e `build_announcement`; áudio confirmado historicamente em 23/11 |
+| Falhas de backend/banco | p. 6 | Erros normalizados, falha/reconexão na interface; limites em requisitos |
+| React | pp. 6–8 | Expo/React Native Web aceito pelo solicitante; código em `frontend/` |
+| Python 3.14/Flask, MySQL 8 | pp. 6–7 | Dockerfile e CI 3.14, `.python-version`; Flask justificado no README; execução registrada separadamente |
+| main/dev e merge | p. 7 | PR #1 registra dev → main. PR #2 de outra branch → main é desvio histórico; sem reescrever commits. Este lote segue dev → main |
+| README, configuração e testes | p. 8 | Instruções locais/Docker, migrations, demo, arquitetura, membros e papéis |
+| Entrega Teams, datas e apresentação | pp. 9–10 | Responsabilidade do solicitante; não enviadas automaticamente |
+
+### Evidência atual e dependências
+
+Resultados deste lote: [validacao-conformidade.md](validacao-conformidade.md).
+Consulta de colaboradores em 27/11: `marconi-prog` (admin) e `DevNeto07` (write).
+Pedro contribuiu como `Pedro_HenriRod`, pela PR #2 da conta `Subaru21-bot`, mas não é colaborador
+ativo. Marconi deve convidar os quatro restantes e eles devem aceitar; a conta autenticada não
+tem administração. As contas de Karllyson, Gustavo e Janildo não foram inventadas.
+
+As exceções são aceites do solicitante, sem comprovação escrita do professor. A atribuição de
+papéis não foi usada para inventar contribuições anteriores. A tag publicada `v1.0-entrega`
+permanece preservada e não representa automaticamente alterações posteriores.
+
+## Histórico anterior — referência de 23/11/2026
+
+As tabelas abaixo registram a situação **anterior** à leitura do PDF e às mudanças de 27/11.
+Não substituem a matriz atual nem a nova execução dos testes. Em especial, a proibição anterior
+de ADMIN operar guichê, a ausência de papéis e a indisponibilidade de todos os PDFs foram superadas.
 
 ## Evidências de validação registradas (23/11/2026)
 
@@ -27,68 +70,11 @@ Situação em **23/11/2026**, preparada no lote inicial de preparação acadêmi
 As validações automáticas cobrem backend/API; as telas têm a verificação guiada separada acima.
 O solicitante confirmou a reprodução do sinal e da voz durante o teste.
 
-## Legenda
+## Limites atuais
 
-| Situação | Significado |
-|---|---|
-| Validado (backend/API) | Teste automatizado do backend executado e aprovado em 23/11/2026 |
-| Implementado (manual) | Código existe; validação depende de teste manual ainda não registrado |
-| Parcial | Atende em parte ou possui ressalva documentada |
-| Pendente | Depende de ação ou informação |
-| Sob responsabilidade do solicitante | Item que o solicitante declarou que vai tratar |
-
-## 1. Requisitos funcionais
-
-| # | Requisito | Evidência | Situação | Correção | Validação |
-|---|---|---|---|---|---|
-| F01 | Emissão SP/SE/SG, código `YYMMDD-PPSQ`, sequência diária por categoria, limite 999 | `ticket_service.py`, `daily_sequences`, `frontend/app/totem/index.tsx` | Backend/API e fluxo do totem verificados | Rolagem e cabeçalho em tela pequena corrigidos | `test_ticket_issuance.py` e roteiro guiado no navegador |
-| F02 | Sem duplicidade com emissões simultâneas | `FOR UPDATE` + `UNIQUE(code)` | Validado (backend/API) | — | `test_concurrent_issuance_never_duplicates_codes` (aprovado) |
-| F03 | Ciclo SP → SE/SG → SP; categorias vazias não bloqueiam | `QueueService.select_next_type` | Validado (backend/API) | — | `test_queue_policy.py`, `test_priority_cycle`, `test_cycle_handles_empty_categories` (aprovados) |
-| F04 | Reserva atômica da próxima senha | `QueueService.call_next` | Validado (backend/API) | — | `test_concurrent_attendants_never_get_same_ticket`, `test_concurrent_double_click_reserves_only_one` (aprovados) |
-| F05 | Máquina de estados com histórico imutável | `state_machine.py`, `ticket_status_history` | Validado (backend/API) | — | `test_state_machine.py` (aprovado) |
-| F06 | Iniciar/finalizar atendimento com duração | `AttendanceService` | Validado (backend/API) | — | `test_start_and_finish` (aprovado) |
-| F07 | Repetir chamada; ausência só após a 2ª chamada | `recall` + `no_show`; tabela `calls` | Validado (backend/API) | — | `test_recall_creates_new_call_record`, `test_third_call_is_not_allowed`, `test_no_show_after_two_calls_releases_queue` (aprovados) |
-| F08 | Painel: chamada atual, 5 últimas, próximos, tempo real | `PanelService`, Socket.IO `/panel`, `frontend/app/panel/index.tsx` | Backend/API, eventos e atualização visual verificados | Fonte baseada na largura útil para não cortar o código | `test_panel_realtime.py` e roteiro guiado no navegador |
-| F09 | Anúncio sonoro/voz no painel | `useAnnouncer.ts` (Web Audio + Expo Speech `pt-BR`) | Verificado no navegador e confirmado pelo solicitante | Som habilitado e chamadas sem erro no console | Solicitante confirmou ter ouvido sinal e voz; repetir no equipamento da apresentação |
-| F10 | Expediente: chamadas 07–17h, emissão 06–17h, encerramento automático | `business_hours.py`, `day_closing_service.py`, `scheduler.py` | Validado (backend/API) | — | `test_business_hours`, `test_calls_blocked_outside_business_hours`, `test_day_closing_*`, `test_scheduled_closing*` (aprovados) |
-| F11 | Atendente: guichê autorizado, chamar, repetir, iniciar, finalizar, ausência | `attendant_controller.py`, `frontend/app/(attendant)/attendant.tsx` | Backend/API e fluxo da interface verificados | — | `test_attendance.py` e roteiro guiado no navegador |
-| F12 | Gestor: indicadores, usuários com guichês, guichês, relatórios, auditoria, encerrar dia | `user_service.py`, `counter_service.py`, `frontend/app/(manager)/manager/*` | Backend/API validados; telas de consulta verificadas | — | `test_management.py`, `test_dashboard` e consulta no navegador; encerramento validado por testes do backend |
-| F13 | Relatórios diário, mensal e por período | `ReportService` | Validado (backend/API) | — | `test_reports.py` (aprovado) |
-| F14 | Auditoria sem senhas | `AuditService` | Validado (backend/API) | — | `test_audit_log`, `test_login_is_audited_without_password` (aprovados) |
-
-## 2. Segurança e API
-
-| # | Requisito | Evidência | Situação | Correção | Validação |
-|---|---|---|---|---|---|
-| S01 | JWT access + refresh, revogação, hash de senha | `AuthService`, `middlewares/auth.py` | Validado (backend/API) | — | `test_refresh_flow`, `test_logout_revokes_tokens`, `test_deactivated_user_loses_access_immediately` (aprovados) |
-| S02 | Autorização por perfil | `roles_required` via `api_route` | Validado (backend/API) | — | `test_anonymous_is_rejected`, `test_attendant_cannot_access_admin`, `test_admin_cannot_operate_counter` (aprovados) |
-| S03 | Nenhuma credencial no código | `validate_config`, `.gitignore` | Implementado | — | Revisão de código; `.env` reais não foram lidos |
-| S04 | OpenAPI/Swagger | `/api/docs`, `routes/registry.py` | Validado (backend/API) | — | `test_openapi.py` (aprovado) |
-
-## 3. Infraestrutura, testes e documentação
-
-| # | Requisito | Evidência | Situação | Correção | Validação |
-|---|---|---|---|---|---|
-| I01 | Flask + MySQL 8 com migrations Alembic | `0001_schema_inicial.py` | Validado | — | `flask db upgrade` aprovado em banco descartável `attendance_migration_test` |
-| I02 | Docker Compose com health checks | `docker-compose.yml`, `.gitattributes`, `.dockerignore` | Validado em ambiente isolado local | Scripts `.sh` com LF e exclusão de dependências locais/arquivos de ambiente no build | Build, três serviços saudáveis, HTTP 200 e fluxo integrado via API |
-| I03 | Frontend Expo (**aprovado**) | `package.json` (Expo SDK 58), `app.json`, `eslint.config.js` | Verificações estáticas, build e fluxo guiado da interface | Lint, Hooks, timer e legibilidade corrigidos | Instalação limpa, TypeScript, lint e build aprovados; ver `validacao-interface.md`; sem suíte E2E automatizada |
-| I04 | Nome do projeto (**aprovado**) | `README.md`, `app.json` | Implementado | — | — |
-| I05 | Testes executáveis com segurança | `backend/tests/` (MySQL), `backend/tests_isolated/` (SQLite) | Validado | README corrigido: `tests/` inteira (inclusive `tests/unit`) apaga o banco de testes | 196 aprovados em MySQL descartável; 39 isolados aprovados |
-| I06 | Dados de demonstração seguros | `backend/app/demo_seed.py` (`flask seed-demo`) | Validado | Comando novo (commit `7710003`) | 39 testes isolados aprovados; `--dry-run` + 2 execuções reais em MySQL, a 2ª preservando contas e senhas |
-| I07 | README com PowerShell | `README.md` | Implementado | Revisado neste lote | Revisão humana |
-| I08 | Fluxo `dev` → validação → PR → `main` | [PR #1](https://github.com/marconi-prog/lab-attendance-system/pull/1) | Rastreável no GitHub | `dev` publicada com os commits originais preservados; PR contém evidências e histórico da integração | Estado e SHA de merge verificáveis no próprio PR |
-| I09 | Tag da versão entregue | `v1.0-entrega` | Referência de versão | Criar somente sobre a versão integrada em `main` | Conferir a referência na [lista de tags](https://github.com/marconi-prog/lab-attendance-system/tags) antes do envio |
-| I10 | Declaração de uso de IA | `README.md` §9 | Implementado | Histórico anterior a 23/11/2026 registrado como desconhecido | Revisão da equipe |
-| I11 | Licença | `LICENSE`, `README.md` §11 | Implementado | MIT 2026 adicionada; copyright dos seis integrantes | — |
-| I12 | Identificação da equipe e colaboração | `README.md` §10, `entrega.md` §1 | Parcial | Nomes/matrículas preenchidos; somente Marconi (admin) e Sérgio (write) constam como colaboradores ativos | Proprietário deve conferir convites/adicionar os outros quatro; seus usuários GitHub e módulos ainda não foram informados |
-| I13 | Datas | `entrega.md` §3 | Sob responsabilidade do solicitante | Registradas sem cobrança de confirmação | — |
-| I14 | Enunciados originais | — | Pendente | Anexar PDFs ou links e reconferir a matriz | — |
-
-## 4. Riscos observados (não corrigidos neste lote)
-
-| Risco | Evidência | Recomendação |
-|---|---|---|
-| `FLASK_ENV` desconhecido cai na configuração de desenvolvimento (`DEBUG=True`) | `get_config` em `settings.py` | Avaliar falha explícita (decisão da equipe); o `seed-demo` já recusa valores ≠ `development` |
-| `seed-demo` é recusado no Docker Compose (`FLASK_ENV=production`) | `docker-compose.yml` | Intencional; no Docker usar `create-admin` + cadastro pela interface |
-| SE tem preferência sobre SG após SP | `architecture.md` | Já documentado; decisão de negócio |
-| Socket.IO em 1 worker; sem rate limit no totem; tokens em `sessionStorage` | `architecture.md` | Já documentado |
+- Socket.IO opera em um worker; escalar exige infraestrutura compartilhada (por exemplo, Redis).
+- Totem não possui rate limit; tokens web usam sessionStorage; retenção LGPD não é automatizada.
+- A suíte MySQL apaga o banco indicado em TEST_DATABASE_URL; usar somente banco descartável.
+- seed-demo é intencionalmente recusado em produção; no Docker usar create-admin e cadastros da interface.
+- A preferência de SE após SP pode atrasar SG; não foi alterada a regra literal da atividade.
+- FLASK_ENV desconhecido ainda cai em configuração de desenvolvimento; não usar valor desconhecido.

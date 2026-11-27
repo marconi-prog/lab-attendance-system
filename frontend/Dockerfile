@@ -6,7 +6,7 @@ ENV EXPO_PUBLIC_API_URL=$EXPO_PUBLIC_API_URL CI=1
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
-RUN npx expo export --platform web
+RUN npx expo export --platform web --max-workers 2
 
 # Etapa 2: servidor estático
 FROM nginx:1.27-alpine
