@@ -34,6 +34,11 @@ class AttendanceService:
         session = cls.current_session(user)
         if not session:
             raise BusinessRuleError("Selecione um guichê antes de operar o atendimento.", code="NO_COUNTER_SESSION")
+        # Defesa em profundidade: a autorização vale em cada operação, não só ao abrir a sessão.
+        if not any(c.id == session.counter_id for c in user.counters):
+            raise PermissionDenied(
+                "Você não está mais autorizado a operar este guichê. Saia do guichê.", code="COUNTER_NOT_AUTHORIZED"
+            )
         return session
 
     @staticmethod
@@ -71,6 +76,8 @@ class AttendanceService:
             session = CounterRepository.open_session_for_user(user.id)
             if not session:
                 raise BusinessRuleError("Nenhum guichê aberto.", code="NO_COUNTER_SESSION")
+            # Serializa o encerramento com call_next, revogação e abertura.
+            CounterRepository.get_for_update(session.counter_id)
             if TicketRepository.active_ticket_for_counter(session.counter_id):
                 raise ConflictError("Finalize o atendimento em andamento antes de sair do guichê.", code="ACTIVE_TICKET_PENDING")
             session.closed_at = utcnow()

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { BellRing, CheckCircle2, DoorOpen, Megaphone, Play, UserX } from 'lucide-react-native';
+import { router } from 'expo-router';
+import { BellRing, CheckCircle2, DoorOpen, LayoutDashboard, Megaphone, Play, UserX } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -10,6 +11,7 @@ import { Card } from '@/components/Card';
 import { ConnectionDot } from '@/components/ConnectionDot';
 import { EmptyState, ErrorBanner, Loading, SuccessBanner } from '@/components/Feedback';
 import { TICKET_TYPE_LABEL, TICKET_TYPES } from '@/constants/labels';
+import { useAuth } from '@/contexts/AuthContext';
 import { useResponsive } from '@/hooks/useResponsive';
 import { useStaffSocket } from '@/hooks/useStaffSocket';
 import { errorMessage } from '@/services/api';
@@ -37,14 +39,17 @@ function useElapsed(startIso: string | null | undefined) {
   return startIso ? Math.max(0, (now - Date.parse(startIso)) / 1000) : null;
 }
 
-function CounterPicker({ onOpened }: { onOpened: () => void }) {
+function CounterPicker({ onOpened, isManager }: { onOpened: () => void; isManager: boolean }) {
   const counters = useQuery({ queryKey: COUNTERS_KEY, queryFn: attendanceService.counters });
   const open = useMutation({ mutationFn: attendanceService.openSession, onSuccess: onOpened });
   if (counters.isLoading) return <Loading />;
+  const noCounters = isManager
+    ? 'Nenhum guichê autorizado para você. Autorize-o em Gestão › Usuários (editar o seu usuário).'
+    : 'Nenhum guichê autorizado. Solicite ao gestor.';
   return (
     <Card title="Selecione seu guichê">
       <ErrorBanner message={counters.isError ? errorMessage(counters.error) : open.isError ? errorMessage(open.error) : null} />
-      {counters.data?.length === 0 ? <EmptyState message="Nenhum guichê autorizado. Solicite ao gestor." /> : null}
+      {counters.data?.length === 0 ? <EmptyState message={noCounters} /> : null}
       <View style={styles.counterGrid}>
         {counters.data?.map(({ counter, occupied_by }) => (
           <Pressable
@@ -85,6 +90,8 @@ function QueueSummaryCard({ state }: { state: AttendantState }) {
 
 export default function AttendantScreen() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const isManager = user?.role === 'ADMIN';
   const { isWide } = useResponsive();
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -115,13 +122,20 @@ export default function AttendantScreen() {
     <View style={styles.screen}>
       <AppHeader title={session ? `Atendimento · Guichê ${String(session.counter.number).padStart(2, '0')}` : 'Atendimento'}>
         <ConnectionDot connected={connected} />
+        {/* Sair da área de atendimento não libera o guichê: use "Sair do guichê" para isso. */}
+        {isManager ? (
+          <Button title="Gestão" icon={LayoutDashboard} variant="secondary" size="sm" onPress={() => router.push('/manager')} />
+        ) : null}
       </AppHeader>
       <ScrollView contentContainerStyle={styles.content}>
         <ErrorBanner message={error ?? (state.isError ? errorMessage(state.error) : null)} />
         <SuccessBanner message={message} />
 
         {!session ? (
-          <CounterPicker onOpened={() => { refresh(); void queryClient.invalidateQueries({ queryKey: COUNTERS_KEY }); }} />
+          <CounterPicker
+            isManager={isManager}
+            onOpened={() => { refresh(); void queryClient.invalidateQueries({ queryKey: COUNTERS_KEY }); }}
+          />
         ) : (
           <View style={[styles.columns, { flexDirection: isWide ? 'row' : 'column' }]}>
             <View style={{ flex: 3, gap: spacing.lg }}>

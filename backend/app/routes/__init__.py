@@ -43,7 +43,8 @@ from app.schemas.responses import (
 from app.schemas.user import AssignCountersRequest, UserCreate, UserListQuery, UserOut, UserUpdate
 
 ADMIN = (UserRole.ADMIN,)
-ATTENDANT = (UserRole.ATTENDANT,)
+# O gestor (ADMIN) também atende: rotas de atendimento são STAFF, mas cada operação
+# continua restrita aos guichês autorizados ao usuário (AttendanceService).
 STAFF = (UserRole.ADMIN, UserRole.ATTENDANT)
 
 # ---------------------------------------------------------------- público
@@ -75,24 +76,24 @@ api_route(tickets_bp, "/<int:ticket_id>", summary="Detalhe da senha com chamadas
 
 # ----------------------------------------------------------- atendimento
 attendant_bp = Blueprint("attendant", __name__, url_prefix="/api/attendant")
-api_route(attendant_bp, "/state", summary="Estado do atendente: guichê, senha atual e fila", roles=ATTENDANT,
+api_route(attendant_bp, "/state", summary="Estado do atendente: guichê, senha atual e fila", roles=STAFF,
           response=AttendantStateOut)(attendant.state)
-api_route(attendant_bp, "/counters", summary="Guichês autorizados e ocupação", roles=ATTENDANT,
+api_route(attendant_bp, "/counters", summary="Guichês autorizados e ocupação", roles=STAFF,
           response=AvailableCountersOut)(attendant.counters)
-api_route(attendant_bp, "/session", methods=["POST"], summary="Assumir um guichê autorizado", roles=ATTENDANT,
+api_route(attendant_bp, "/session", methods=["POST"], summary="Assumir um guichê autorizado", roles=STAFF,
           body=OpenSessionRequest, response=CounterSessionOut, status=201, errors=[403, 404, 409])(attendant.open_session)
-api_route(attendant_bp, "/session", methods=["DELETE"], summary="Sair do guichê", roles=ATTENDANT,
+api_route(attendant_bp, "/session", methods=["DELETE"], summary="Sair do guichê", roles=STAFF,
           status=204, errors=[409, 422])(attendant.close_session)
-api_route(attendant_bp, "/call-next", methods=["POST"], summary="Chamar a próxima senha (QueueService)", roles=ATTENDANT,
+api_route(attendant_bp, "/call-next", methods=["POST"], summary="Chamar a próxima senha (QueueService)", roles=STAFF,
           response=CallResultOut, errors=[409, 422])(attendant.call_next)
 api_route(attendant_bp, "/tickets/<int:ticket_id>/recall", methods=["POST"], summary="Repetir chamada (última chamada)",
-          roles=ATTENDANT, response=CallResultOut, errors=[403, 404, 422])(attendant.recall)
+          roles=STAFF, response=CallResultOut, errors=[403, 404, 422])(attendant.recall)
 api_route(attendant_bp, "/tickets/<int:ticket_id>/start", methods=["POST"], summary="Iniciar atendimento",
-          roles=ATTENDANT, response=AttendanceResultOut, errors=[403, 404, 422])(attendant.start)
+          roles=STAFF, response=AttendanceResultOut, errors=[403, 404, 422])(attendant.start)
 api_route(attendant_bp, "/tickets/<int:ticket_id>/finish", methods=["POST"], summary="Finalizar atendimento",
-          roles=ATTENDANT, response=AttendanceResultOut, errors=[403, 404, 422])(attendant.finish)
+          roles=STAFF, response=AttendanceResultOut, errors=[403, 404, 422])(attendant.finish)
 api_route(attendant_bp, "/tickets/<int:ticket_id>/no-show", methods=["POST"],
-          summary="Registrar não comparecimento (após a 2ª chamada)", roles=ATTENDANT, response=TicketResultOut,
+          summary="Registrar não comparecimento (após a 2ª chamada)", roles=STAFF, response=TicketResultOut,
           errors=[403, 404, 422])(attendant.no_show)
 
 # ------------------------------------------------------------------ gestão
