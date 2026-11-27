@@ -347,6 +347,7 @@ responsabilidades a assumir, sem atribuição de contribuições anteriores. Mar
 
 Usuários GitHub e colaboradores: ver [`docs/entrega.md`](docs/entrega.md).
 
+
 ## 11. Licença
 
 Distribuído sob a licença **MIT** — ver [`LICENSE`](LICENSE).
