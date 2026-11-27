@@ -8,6 +8,7 @@ import click
 from flask import Flask
 from sqlalchemy.exc import IntegrityError
 
+from app.attendance_simulation import simulate_attendance_command
 from app.demo_seed import seed_demo_command
 from app.extensions import db
 from app.models import Counter, User, UserRole
@@ -86,3 +87,5 @@ def register_cli(app: Flask) -> None:
 
     # Somente demonstração: opt-in explícito, recusado fora de FLASK_ENV=development.
     app.cli.add_command(seed_demo_command)
+    # Simulação estatística pura (JSON no stdout, sem banco): mesmas travas de demonstração.
+    app.cli.add_command(simulate_attendance_command)

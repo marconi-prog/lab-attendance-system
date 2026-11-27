@@ -128,7 +128,7 @@ def test_command_is_registered_with_existing_commands():
 # ------------------------------------------------------------------ criação
 def test_creates_manager_and_attendant_with_counter_permission(demo_app, run_seed, passwords_env, no_prompt):
     demo_app.config.update(
-        TICKET_ISSUE_OPEN_TIME=time(6, 30), BUSINESS_OPEN_TIME=time(7, 0), BUSINESS_CLOSE_TIME=time(17, 0),
+        TICKET_ISSUE_OPEN_TIME=time(7, 30), BUSINESS_OPEN_TIME=time(7, 0), BUSINESS_CLOSE_TIME=time(17, 0),
         TIMEZONE="America/Recife", ENFORCE_BUSINESS_HOURS=True,
     )
     result = run_seed("--confirm-demo")
@@ -151,7 +151,7 @@ def test_creates_manager_and_attendant_with_counter_permission(demo_app, run_see
 
     assert MANAGER_PW not in result.output and ATTENDANT_PW not in result.output
     assert "Nenhuma senha de atendimento foi emitida" in result.output
-    assert "/totem" in result.output and "06:30" in result.output and "17:00" in result.output
+    assert "/totem" in result.output and "07:30" in result.output and "17:00" in result.output
 
 
 def test_multiple_counters_reuse_existing_and_create_missing(demo_app, run_seed, passwords_env, no_prompt):

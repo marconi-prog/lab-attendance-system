@@ -271,7 +271,7 @@ def _echo_plan(plan: Plan, specs: list[AccountSpec], *, dry_run: bool) -> None:
 
 def _echo_script(specs: list[AccountSpec]) -> None:
     cfg = current_app.config
-    issue_open = _fmt_time(cfg.get("TICKET_ISSUE_OPEN_TIME"), "06:00")
+    issue_open = _fmt_time(max(cfg.get("TICKET_ISSUE_OPEN_TIME", time(7)), cfg.get("BUSINESS_OPEN_TIME", time(7))), "07:00")
     call_open = _fmt_time(cfg.get("BUSINESS_OPEN_TIME"), "07:00")
     close = _fmt_time(cfg.get("BUSINESS_CLOSE_TIME"), "17:00")
     tz = cfg.get("TIMEZONE", "America/Recife")
