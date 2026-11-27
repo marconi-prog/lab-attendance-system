@@ -16,7 +16,7 @@ PDF principal ainda não localizado: não inventar interpretação de 5% nem alt
 - [x] Produzir artefatos de branding, MER, UML, mockups e requisitos com base no código.
 - [x] Atualizar matriz de conformidade e checklist com evidências e exceções autorizadas.
 - [x] Validar em bancos descartáveis (292 testes), testar frontend e Docker, revisar diff e segurança.
-- [ ] Fazer commits na dev, publicar PR, integrar main e registrar referência final sem mover tag.
+- [x] Fazer commits na dev e preparar publicação via [PR #4](https://github.com/marconi-prog/lab-attendance-system/pull/4), fonte do estado da integração e checks; referência deste lote `v1.0.1-entrega`, preservando `v1.0-entrega`.
 
 **Foco da revisão:** concorrência na criação de gestor; contas antigas com conflito; acesso indevido
 a guichês; migração preservando dados; operação das duas áreas pelo gestor; falhas de rede e áudio.

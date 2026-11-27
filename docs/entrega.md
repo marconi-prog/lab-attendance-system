@@ -43,7 +43,9 @@ histórico de commits/PRs, sozinho, não comprova participação como membro do 
 |---|---|---|
 | Repositório | https://github.com/marconi-prog/lab-attendance-system | Confirmado pelo `git remote` |
 | Pull request `dev` → `main` | https://github.com/marconi-prog/lab-attendance-system/pull/1 | Registro da integração; consultar o estado e SHA no próprio PR |
+| Pull request do alinhamento ao PDF | https://github.com/marconi-prog/lab-attendance-system/pull/4 | Fonte do estado do merge, SHA e verificações deste lote |
 | Tag/release anterior | `v1.0-entrega` | Preservada em `5764743`; não inclui mudanças posteriores. Não foi movida nem apresentada como a revisão final deste lote |
+| Referência do alinhamento | `v1.0.1-entrega` | Publicar somente sobre a revisão integrada e validada; conferir existência e SHA na lista de tags |
 | Demonstração online | — | Inexistente: demonstração prevista é local |
 | Vídeo ou slides | — | Pendente (se exigido) |
 | Swagger | `http://localhost:5000/api/docs` | Apenas local |
@@ -71,7 +73,7 @@ integrada em `main`. Nenhuma alteração foi atribuída artificialmente aos dema
 - [x] Abrir o PR `dev` → `main` com as evidências de validação
 - [x] Revisão técnica e verificações pelo Codex, com implementação assistida pelo Claude Code
 - [x] PR #1 mesclado; tag `v1.0-entrega` preservada em `5764743`
-- [ ] Publicar este lote pela dev e integrar por novo PR; registrar referência validada
+- [x] Publicar este lote pela dev e abrir [PR #4](https://github.com/marconi-prog/lab-attendance-system/pull/4); estado do merge e verificações consultáveis no próprio PR
 - [ ] Revisão adicional de outro integrante e conferência dos colaboradores ativos
 
 ## 5. Validação

@@ -263,7 +263,11 @@ nenhuma credencial no código (a aplicação não sobe sem os segredos no ambien
 4. **Merge em `main`** somente após aprovação — `main` é sempre a versão entregável. Sem push direto na `main`.
 5. **Tag `v1.0-entrega`** sobre a versão validada e integrada na `main`.
 
-A preparação desta entrega é rastreada pelo [PR #1](https://github.com/marconi-prog/lab-attendance-system/pull/1).
+A preparação inicial é rastreada pelo [PR #1](https://github.com/marconi-prog/lab-attendance-system/pull/1).
+O alinhamento ao PDF e os ajustes de gestor/Python são rastreados pelo
+[PR #4](https://github.com/marconi-prog/lab-attendance-system/pull/4). A tag anterior `v1.0-entrega`
+é preservada em `5764743`; a referência deste lote é `v1.0.1-entrega`, publicada somente após
+validação e integração. Consulte as referências no GitHub para verificar sua existência e estado.
 Consulte o próprio PR e a [lista de tags](https://github.com/marconi-prog/lab-attendance-system/tags)
 para conferir a versão publicada antes do envio acadêmico.
 

@@ -29,6 +29,7 @@ Registro deste lote, separado dos resultados históricos de 23/11.
 | Compose em projeto/volume novos | Build passou; MySQL, backend e frontend saudáveis; migrations aplicadas no banco novo |
 | Interface do gestor no navegador | Login, edição do próprio usuário e autorização no guichê 01, alternância Gestão/Atendimento, abertura do guichê, emissão SP no totem, chamada/início/fim pelo gestor passaram |
 | Indicadores e encerramento da sessão | Gestão exibiu 1 emitida e 1 atendida, guichê mantido ao alternar áreas; saída liberou o guichê e logout retornou ao login; zero erros no console capturado |
+| CI remoto | Workflow `.github/workflows/validation.yml`; consultar checks do [PR #4](https://github.com/marconi-prog/lab-attendance-system/pull/4) para resultado da execução remota |
 
 O build web foi limitado a dois workers para reduzir pressão de memória no equipamento de 8 GB;
 a suíte final foi concluída antes de retomá-lo. A validação de interface foi guiada via automação
