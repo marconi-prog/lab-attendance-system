@@ -6,7 +6,7 @@ guichês e auditoria).
 
 | Camada | Tecnologia |
 |---|---|
-| Backend | Python 3.12, Flask 3, SQLAlchemy 2, Alembic, Flask-JWT-Extended, Flask-SocketIO, Pydantic 2, Gunicorn |
+| Backend | Python 3.14, Flask 3, SQLAlchemy 2, Alembic, Flask-JWT-Extended, Flask-SocketIO, Pydantic 2, Gunicorn |
 | Banco | MySQL 8.0 (InnoDB) |
 | Frontend | Expo SDK 58, React Native + React Native Web, TypeScript, Expo Router, TanStack Query, Axios, Socket.IO Client, React Hook Form + Zod, Expo Speech, Lucide |
 | Infra | Docker, Docker Compose, health checks, variáveis de ambiente |
@@ -21,6 +21,15 @@ Documentação: [`docs/architecture.md`](docs/architecture.md) · [`docs/databas
 [`docs/conformidade.md`](docs/conformidade.md) (matriz requisito/evidência/situação) ·
 [`docs/entrega.md`](docs/entrega.md) (checklist de entrega e pendências) · Swagger em `http://localhost:5000/api/docs`.
 
+Artefatos da atividade: [identidade visual](docs/branding/README.md), [MER](docs/mer/README.md),
+[mockups](docs/mockups/README.md), [UML](docs/models/uml/README.md) e
+[requisitos e regras](docs/requirements/README.md).
+
+**Objetivo:** organizar emissão e atendimento de senhas do laboratório, com prioridade, rastreabilidade
+e indicadores. **Escolha do backend:** Flask permite separar rotas, serviços e persistência sem
+impor uma arquitetura extensa; SQLAlchemy/Alembic fornecem transações e migrations no MySQL 8,
+e Flask-SocketIO entrega as chamadas ao painel. Python 3.14 alinha o ambiente ao PDF da atividade.
+
 Os comandos abaixo usam **PowerShell (Windows)**. Equivalentes para bash (Linux/macOS) aparecem nos
 blocos recolhíveis.
 
@@ -33,7 +42,7 @@ blocos recolhíveis.
 | Cliente (sem login) | Totem: emissão de senha **SP** (prioritária), **SE** (retirada de exames) ou **SG** (geral), código `YYMMDD-PPSQ`, sequência diária por categoria |
 | Painel (público) | Senha chamada, 5 últimas chamadas, próximas por fila, atualização em tempo real (Socket.IO), sinal sonoro e voz `pt-BR` |
 | Atendente (`ATTENDANT`) | Escolher guichê autorizado; chamar próxima (ciclo SP → SE/SG → SP); repetir chamada; iniciar e finalizar atendimento; registrar ausência após a 2ª chamada |
-| Gestor (`ADMIN`) | Indicadores do dia; relatórios diário, mensal e por período; usuários e guichês autorizados; guichês; auditoria; encerramento do expediente |
+| Gestor (`ADMIN`) | Atendimento nos guichês autorizados, além de indicadores, relatórios, usuários, guichês, auditoria e encerramento do expediente; somente um gestor ativo |
 | Sistema | Expediente (America/Recife): emissão 06:00–17:00, chamadas 07:00–17:00, encerramento automático às 17:00; JWT com refresh e revogação; OpenAPI/Swagger |
 
 ## 2. Execução rápida com Docker (recomendado)
@@ -82,6 +91,10 @@ Fluxo de demonstração no Docker: entre como gestor → **Usuários** → crie 
 guichês autorizados → em outra aba entre como atendente, escolha o guichê → emita senhas no totem →
 **Chamar próxima** e acompanhe o painel.
 
+Para o próprio gestor atender, edite seu usuário em **Usuários**, selecione os guichês autorizados
+e salve. Use **Atendimento** no topo para assumir um guichê e **Gestão** para voltar. Alternar
+entre as áreas mantém a sessão; **Sair do guichê** a encerra quando não há senha ativa.
+
 > O Compose sobe o backend com `FLASK_ENV=production`; por isso o comando de demonstração
 > `flask seed-demo` (§3.4) é **recusado** no Docker. Use `create-admin` + cadastro pela interface.
 
@@ -109,7 +122,7 @@ GRANT ALL PRIVILEGES ON atendimento_test.* TO 'atendimento'@'%';
 
 ```powershell
 cd backend
-py -3.12 -m venv .venv
+py -3.14 -m venv .venv
 .\.venv\Scripts\Activate.ps1   # se a ativação for bloqueada, veja a nota abaixo
 pip install -r requirements-dev.txt
 Copy-Item .env.example .env    # preencha DATABASE_URL, TEST_DATABASE_URL, SECRET_KEY, JWT_SECRET_KEY
@@ -124,7 +137,7 @@ python run.py                  # http://localhost:5000  (API + Socket.IO)
 
 ```bash
 cd backend
-python3.12 -m venv .venv && source .venv/bin/activate
+python3.14 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
 cp .env.example .env
 flask db upgrade && flask seed
@@ -216,8 +229,9 @@ validados em bancos descartáveis. Instalação limpa (`npm ci`), TypeScript, li
 O Docker Compose foi construído e executado em projeto/volume de revisão separados: os três serviços
 ficaram saudáveis e o fluxo de atendimento passou via API. A nova execução completa aprovou **235 testes**.
 O fluxo guiado das telas foi verificado e o solicitante confirmou sinal e voz. Veja o
-[`registro da interface`](docs/validacao-interface.md). A conferência dos enunciados originais continua
-pendente — detalhes em [`docs/conformidade.md`](docs/conformidade.md).
+[`registro da interface`](docs/validacao-interface.md). Esses resultados são históricos; a validação
+do lote de 27/11/2026 é registrada separadamente em [`docs/validacao-conformidade.md`](docs/validacao-conformidade.md).
+O PDF da atividade foi conferido; falta o PDF principal para resolver horário de emissão e regra dos 5%.
 
 ## 5. Estrutura
 
@@ -226,7 +240,8 @@ backend/    app/{config,extensions,models,repositories,services,controllers,rout
             app/cli.py  app/demo_seed.py  migrations/  tests/{unit,integration}  tests_isolated/  run.py  wsgi.py  Dockerfile
 frontend/   app/{(auth),(attendant),(manager),totem,panel}  src/{components,services,hooks,contexts,types,utils,constants,theme}
 database/   scripts/ (init do MySQL)  seeds/  README.md
-docs/       architecture.md  database.md  api.md  requirements.md  conformidade.md  entrega.md
+docs/       branding/  mer/  mockups/  models/uml/  requirements/  plans/
+            architecture.md  database.md  api.md  requirements.md  conformidade.md  entrega.md
 ```
 
 ## 6. Segurança (resumo)
@@ -263,10 +278,20 @@ para conferir a versão publicada antes do envio acadêmico.
 * Socket.IO em 1 worker (escalar exige Redis como `message_queue`); sem rate limit no totem; na web os
   tokens ficam em `sessionStorage` (ver riscos em [`docs/architecture.md`](docs/architecture.md)).
 * Pela leitura literal da regra, SE tem preferência sobre SG após SP, o que pode atrasar SG.
-* Os enunciados originais não estão no repositório; a conformidade foi derivada da documentação existente.
+* O PDF da atividade foi lido (10 páginas); o PDF principal ainda não foi fornecido/localizado.
+  A emissão às 6h e a interpretação dos aproximadamente 5% de ausências dependem desse documento.
+* Expo Web, o nome do repositório e a previsão de próximas senhas foram aceitos pelo solicitante.
+  A previsão diverge da p. 5 da atividade; não há registro escrito de dispensa pelo professor.
+* A migration de gestor único recusa bases com múltiplos gestores ativos, preservando os dados.
+  Resolva os perfis com o responsável antes de reaplicar; não apague contas para migrar.
+* A transferência do cargo de gestor não possui fluxo na interface: exige manutenção autorizada,
+  com backup e auditoria, para substituir o titular sem violar o limite nem remover seu histórico.
 
 ## 9. Declaração de uso de inteligência artificial
 
+* **Conferência do PDF e alinhamento em 27/11/2026:** Codex organizou artefatos, infraestrutura,
+  matriz e validações; Claude Code auxiliou na implementação dos perfis e testes. Os papéis da equipe
+  foram atribuídos pelo solicitante; não foram criados commits em nome de outros integrantes.
 * **Preparação acadêmica iniciada em 23/11/2026:** o **Codex** (OpenAI) coordena as tarefas e o
   **Claude Code** (Anthropic) auxilia na execução. Neste lote, o Claude Code redigiu
   `docs/conformidade.md`, `docs/entrega.md` e esta revisão do README, e implementou o comando
@@ -276,18 +301,23 @@ para conferir a versão publicada antes do envio acadêmico.
 * **Histórico anterior** (incluindo os commits de 10/11/2026): o uso de IA é **desconhecido** — não há
   registro no repositório. A equipe deve completar esta declaração.
 
-## 10. Membros
+## Membros
 
 Identificação operacional: **Nassau Ticket**
 
-| Nome | Matrícula |
-|---|---|
-| Karllyson Paula | 01861379 |
-| Marconi Farias Araújo | 01783919 |
-| Gustavo Buled Martins | 01797483 |
-| Sérgio Luiz dos Santos Neto | 01819969 |
-| Pedro Henrique Rodrigues da Silva | 01794091 |
-| Janildo Caluête de Farias Júnior | 01799458 |
+| Nome | Matrícula | Papel |
+|---|---|---|
+| Karllyson Paula | 01861379 | Testador |
+| Marconi Farias Araújo | 01783919 | Scrum Master e Desenvolvedor |
+| Gustavo Buled Martins | 01797483 | Desenvolvedor |
+| Sérgio Luiz dos Santos Neto | 01819969 | Desenvolvedor e Testador |
+| Pedro Henrique Rodrigues da Silva | 01794091 | Documentador |
+| Janildo Caluête de Farias Júnior | 01799458 | Documentador |
+
+Papéis atribuídos pelo solicitante: Marconi criou o repositório e implementou a base do sistema;
+Sérgio contribuiu com correções, documentação e validações assistidas por IA; Pedro atualizou a
+identificação da equipe no README. Para Karllyson, Gustavo e Janildo, os papéis indicam
+responsabilidades a assumir, sem atribuição de contribuições anteriores. Marconi é o único Scrum Master.
 
 Usuários GitHub e colaboradores: ver [`docs/entrega.md`](docs/entrega.md).
 

@@ -50,7 +50,8 @@
 4. **Máquina de estados única.** Toda mudança de status passa por `TicketStateMachine.transition`,
    que valida a tabela de transições e grava `ticket_status_history` (quem, quando, qual guichê).
 5. **Eventos só após commit.** `RealtimeNotifier` é chamado depois de `run_in_transaction` — o painel
-   nunca mostra senha não chamada. Clientes não emitem eventos de estado.
+   não apresenta uma senha como chamada antes da confirmação. O quadro de previsões é separado
+   das chamadas efetivas e foi aceito pelo solicitante. Clientes não emitem eventos de estado.
 6. **Datas em UTC no banco**, regras e respostas em America/Recife (`utils/clock.py`). O relógio é
    substituível nos testes (`Clock.now_utc`).
 7. **Deadlock/lock timeout** (MySQL 1213/1205) são repetidos automaticamente em `run_in_transaction`.
@@ -77,6 +78,11 @@ A origem (`Origin`) do handshake é validada contra `CORS_ORIGINS`. Em produçã
   manualmente (`POST /api/admin/close-day` ou `flask close-day`).
 
 ## Frontend
+
+O gestor (`ADMIN`) acumula as operações do atendente e administração; continua precisando de
+autorização para cada guichê. Atendentes comuns não acessam gestão. Há no máximo um gestor ativo;
+a restrição é protegida no banco e em todos os caminhos de criação/alteração. A migration recusa
+uma base antiga com múltiplos gestores ativos, sem apagar ou rebaixar contas automaticamente.
 
 * **Expo Router** com grupos: `(auth)/login`, `(attendant)/attendant`, `(manager)/manager/*`, `totem`, `panel`.
   `RoleGuard` protege os grupos por perfil.

@@ -1,7 +1,7 @@
 # Modelagem do banco (MySQL 8 / InnoDB, utf8mb4)
 
 Datas/horas em `DATETIME` **UTC**; `reference_date` é a data **local** (America/Recife) da emissão.
-Schema versionado em `backend/migrations/versions/0001_schema_inicial.py`.
+Schema versionado em `backend/migrations/versions/`: criação inicial e evolução para gestor ativo único.
 
 ```text
 users ──< user_counters >── counters
@@ -26,7 +26,14 @@ token_blocklist (JWT revogados)
 | password_hash | VARCHAR(255) | scrypt (Werkzeug) — nunca texto puro |
 | role | ENUM('ADMIN','ATTENDANT') | índice |
 | active | BOOL | desativar = perde acesso imediatamente |
+| active_manager_slot | SMALLINT calculado virtual | 1 para ADMIN ativo, NULL para demais; índice único `uq_users_active_manager_slot` |
 | created_at, updated_at | DATETIME | |
+
+O gestor acumula atendimento e administração. Somente um pode estar ativo; gestores históricos
+inativos e atendentes não competem pelo índice, pois recebem NULL. A migration verifica previamente
+múltiplos gestores ativos e aborta antes do DDL, preservando contas, hashes e permissões. O responsável
+deve resolver o conflito sem excluir dados e reaplicar a migration. Escritas diretas e concorrentes
+também ficam protegidas pelo índice; API/CLI traduzem o conflito em mensagem compreensível.
 
 ### counters
 `id`, `name` VARCHAR(60), `number` INT **UNIQUE**, `active`, `created_at`, `updated_at`.
@@ -99,9 +106,13 @@ EMITIDA → AGUARDANDO → CHAMADA → EM_ATENDIMENTO → ATENDIDA
 | Operação | Bloqueios |
 |---|---|
 | Emitir senha | `daily_sequences` (linha do dia/categoria) `FOR UPDATE` |
-| Chamar próxima | `queue_states` (linha do dia) `FOR UPDATE` → `tickets` `FOR UPDATE SKIP LOCKED` |
+| Chamar próxima | `counters` `FOR UPDATE` → revalidar sessão/acesso → `queue_states` (dia) `FOR UPDATE` → `tickets` `FOR UPDATE SKIP LOCKED` |
 | Repetir / iniciar / finalizar / ausência | `tickets` (a senha) `FOR UPDATE` |
 | Abrir sessão de guichê | `counters` (o guichê) `FOR UPDATE` |
+| Revogar guichê / desativar usuário / sair do guichê | Mesmo bloqueio em `counters`; rejeita alteração se houver senha ativa |
 | Encerrar expediente | `queue_states` → `tickets` aguardando `FOR UPDATE` |
 
-Ordem de bloqueio consistente (queue_states → tickets) evita deadlocks; os residuais são reexecutados.
+Ordem consistente (counters → queue_states → tickets, quando aplicável) evita inversões entre chamada
+e revogação; os deadlocks residuais são reexecutados. A sessão e a autorização são consultadas
+novamente no banco dentro de cada tentativa da transação de chamada, sem confiar no estado da
+requisição antes de um bloqueio. Encerramento forçado pelo gestor continua sendo ação explícita de recuperação.

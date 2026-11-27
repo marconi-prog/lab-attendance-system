@@ -1,6 +1,7 @@
 # Checklist de entrega
 
-Situação em **23/11/2026**. Itens **pendentes** dependem da equipe; nada aqui foi inventado.
+Situação em **27/11/2026**. Itens pendentes são explicitados; papéis atribuídos não representam
+contribuições anteriores inventadas. Resultados antigos permanecem datados como históricos.
 Conformidade técnica e evidências de validação: [`conformidade.md`](conformidade.md).
 
 ## 1. Identificação
@@ -9,25 +10,32 @@ Conformidade técnica e evidências de validação: [`conformidade.md`](conformi
 |---|---|---|
 | Nome do projeto | **Aprovado** | "Sistema de Controle de Atendimento — Laboratório de Análises Clínicas" (repositório `lab-attendance-system`) |
 | Tecnologia do frontend (Expo) | **Aprovado** | Expo SDK 58 / React Native + Web |
-| Nome da equipe | Pendente | Identificação operacional: "Equipe lab-attendance-system" (**não** é nome oficial) |
+| Nome da equipe | **Preenchido** | Nassau Ticket, conforme README atualizado pela equipe |
 | Integrantes (nome completo) | **Preenchido** | Informados pelo solicitante (tabela abaixo) |
 | Matrículas | **Preenchido** | Informadas pelo solicitante, zeros à esquerda preservados |
-| Colaboradores ativos no GitHub | **2 confirmados** | Consulta autenticada: `marconi-prog` (admin) e `DevNeto07` (write). Os outros quatro não aparecem na lista de ativos; convites pendentes não foram consultados |
+| Colaboradores ativos no GitHub | **2 confirmados em 27/11** | Consulta autenticada: `marconi-prog` (admin) e `DevNeto07` (write). Os outros quatro não aparecem na lista de ativos; convites pendentes não foram consultados |
 | Inscrição da equipe | Pendente | Ver §3 (datas alternativas) |
 
 | # | Nome | Matrícula | Usuário GitHub | Colaborador no repositório? | Módulo |
 |---|---|---|---|---|---|
-| 1 | Karllyson Paula | 01861379 | pendente | ☐ | a definir |
-| 2 | Marconi Farias Araújo | 01783919 | `marconi-prog` | Sim — admin | a definir |
-| 3 | Gustavo Buled Martins | 01797483 | pendente | ☐ | a definir |
-| 4 | Sérgio Luiz dos Santos Neto | 01819969 | `DevNeto07` | Sim — write | a definir |
-| 5 | Pedro Henrique Rodrigues da Silva | 01794091 | pendente | ☐ | a definir |
-| 6 | Janildo Caluête de Farias Júnior | 01799458 | pendente | ☐ | a definir |
+| 1 | Karllyson Paula | 01861379 | pendente | ☐ | Testes e validação |
+| 2 | Marconi Farias Araújo | 01783919 | `marconi-prog` | Sim — admin | Coordenação (Scrum Master) e desenvolvimento |
+| 3 | Gustavo Buled Martins | 01797483 | pendente | ☐ | Desenvolvimento |
+| 4 | Sérgio Luiz dos Santos Neto | 01819969 | `DevNeto07` | Sim — write | Desenvolvimento, correções e testes |
+| 5 | Pedro Henrique Rodrigues da Silva | 01794091 | `Subaru21-bot` (autor Git: `Pedro_HenriRod`) | Não consta como colaborador ativo | Documentação |
+| 6 | Janildo Caluête de Farias Júnior | 01799458 | pendente | ☐ | Documentação |
 
-A ordem da tabela não indica divisão de módulos; os módulos previstos em `requirements.md` (Dev 1–6)
-ainda não foram atribuídos a integrantes.
+Atribuição de papéis em 27/11/2026, autorizada pelo solicitante e detalhada na seção `## Membros`
+do README. Marconi, Sérgio e Pedro têm contribuições identificadas no histórico. Os papéis dos
+demais indicam responsabilidades a assumir; não comprovam trabalho anterior. A divisão dos seis
+módulos sugeridos em `requirements.md` continua independente desta atribuição de papéis.
 Marconi deve conferir/adicionar Karllyson, Gustavo, Pedro e Janildo usando seus usuários GitHub reais;
 o solicitante atual possui escrita, mas não administração para gerenciar esses convites.
+
+**Ação do administrador:** GitHub → Settings → Collaborators → Add people. Convidar Pedro pela
+conta da PR #2 (`Subaru21-bot`), confirmar com Karllyson/Gustavo/Janildo suas contas e convidá-los
+com acesso de escrita. Cada integrante precisa aceitar. Conferir os seis na lista de acesso;
+histórico de commits/PRs, sozinho, não comprova participação como membro do repositório.
 
 ## 2. URLs
 
@@ -35,7 +43,7 @@ o solicitante atual possui escrita, mas não administração para gerenciar esse
 |---|---|---|
 | Repositório | https://github.com/marconi-prog/lab-attendance-system | Confirmado pelo `git remote` |
 | Pull request `dev` → `main` | https://github.com/marconi-prog/lab-attendance-system/pull/1 | Registro da integração; consultar o estado e SHA no próprio PR |
-| Tag/release da entrega | `v1.0-entrega` | Referência da entrega, criada somente sobre a versão integrada; conferir em https://github.com/marconi-prog/lab-attendance-system/tags |
+| Tag/release anterior | `v1.0-entrega` | Preservada em `5764743`; não inclui mudanças posteriores. Não foi movida nem apresentada como a revisão final deste lote |
 | Demonstração online | — | Inexistente: demonstração prevista é local |
 | Vídeo ou slides | — | Pendente (se exigido) |
 | Swagger | `http://localhost:5000/api/docs` | Apenas local |
@@ -62,7 +70,8 @@ integrada em `main`. Nenhuma alteração foi atribuída artificialmente aos dema
 - [x] Publicar a `dev` no remoto
 - [x] Abrir o PR `dev` → `main` com as evidências de validação
 - [x] Revisão técnica e verificações pelo Codex, com implementação assistida pelo Claude Code
-- [ ] Antes do envio acadêmico, conferir no GitHub o PR #1 mesclado e a tag `v1.0-entrega`
+- [x] PR #1 mesclado; tag `v1.0-entrega` preservada em `5764743`
+- [ ] Publicar este lote pela dev e integrar por novo PR; registrar referência validada
 - [ ] Revisão adicional de outro integrante e conferência dos colaboradores ativos
 
 ## 5. Validação
@@ -79,16 +88,22 @@ integrada em `main`. Nenhuma alteração foi atribuída artificialmente aos dema
 - [x] Smoke integrado via API no Docker — gestor, atendente, guichê, emissão, chamada, atendimento, painel e relatório
 - [x] Fluxo guiado das telas de totem, atendente, gestor e painel — ver `validacao-interface.md`
 - [x] Sinal e voz confirmados pelo solicitante durante as chamadas; repetir no equipamento da apresentação
-- [ ] Conferir [`conformidade.md`](conformidade.md) contra os enunciados oficiais
+- [x] Conferir [`conformidade.md`](conformidade.md) contra o PDF da atividade, 10 páginas
+- [ ] Receber/conferir especificação principal para horário de emissão e interpretação dos 5%
+
+As verificações acima foram feitas em 23/11, antes das alterações de perfis/Python.
+Resultados atuais ficam em [`validacao-conformidade.md`](validacao-conformidade.md).
 
 ## 6. Pendências documentais
 
 | Pendência | Situação | Ação |
 |---|---|---|
-| Enunciados originais (PDFs) | Não disponíveis | Anexar ou registrar links; reconferir a matriz |
+| PDF da atividade | **Lido (10 páginas)** | Estrutura, papéis e regras incorporados à matriz em 27/11 |
+| Especificação principal | **Não localizada** | Confirmar emissão às 6h e significado dos aproximadamente 5% de ausências |
 | Licença MIT | **Adicionada** (`LICENSE`, 2026, os seis integrantes) | — |
 | Declaração de uso de IA | Redigida no README §9 | Equipe completar o histórico anterior a 23/11/2026 |
-| Identificação da equipe | Integrantes e matrículas preenchidos | Pendentes: nome oficial da equipe, GitHub de 4 integrantes, módulos |
+| Identificação da equipe | Nome, integrantes, matrículas e papéis preenchidos | Confirmar contas de Karllyson/Gustavo/Janildo e acesso dos quatro restantes |
+| Exceções aceitas pelo solicitante | Expo Web, nome do repositório, previsões no painel | Sem documento escrito de dispensa do professor para a previsão que diverge da p. 5 |
 
 ## 7. Roteiro de demonstração
 

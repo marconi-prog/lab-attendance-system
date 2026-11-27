@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nassau Ticket — wireframes das telas</title>
+<style>
+body{margin:0;background:#F3F6F9;color:#102331;font:16px system-ui,sans-serif;padding:24px}
+main{max-width:1100px;margin:auto}h1{font-size:26px}h2{font-size:20px}h3{margin:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px}
+section{background:white;border:1px solid #DCE3EA;border-radius:12px;padding:24px}
+.opcao,.acao{display:block;border:2px solid #0B5C8C;border-radius:8px;padding:14px;margin:12px 0}
+.panel{background:#06243A;color:#F4FAFF}.senha{font-size:48px;font-weight:800;margin:16px 0}
+.muted{font-size:14px}.row{display:flex;gap:16px;flex-wrap:wrap}.metric{padding:16px;border:1px solid #DCE3EA}
+li{margin:8px 0}.code{font-variant-numeric:tabular-nums}footer{margin-top:24px}
+</style>
+<main>
+<h1>Nassau Ticket — telas documentadas</h1>
+<p>Wireframes estáticos. Códigos e indicadores ilustrativos; os controles abaixo não executam ações.</p>
+<div class="grid">
+<section><h2>Totem · Emita sua senha</h2><p>Escolha o tipo de atendimento.</p>
+<div class="opcao">SP · Prioritária</div><div class="opcao">SE · Retirada de exames</div>
+<div class="opcao">SG · Geral</div><p>Após emitir: <strong class="code">261127-SP001</strong>. Aguarde o painel.</p></section>
+<section class="panel"><h2>Painel · Chamando agora</h2><div class="senha code">SP001</div>
+<h3>Guichê 01</h3><p>Sinal sonoro e anúncio por voz · Última chamada quando repetida</p>
+<h3>Últimas chamadas</h3><p class="code">SP001 · SE002 · SP003 · SG004 · SP005</p>
+<p class="muted">Previsões de próximas chamadas permanecem como exceção aceita pelo solicitante.</p></section>
+<section><h2>Atendimento · Guichê 01</h2><p>Equipe autenticada · guichês autorizados</p>
+<div class="acao">Chamar próxima senha</div><h3 class="code">SP001 · Chamada</h3>
+<div class="row"><span class="acao">Iniciar atendimento</span><span class="acao">Repetir chamada</span></div>
+<p>Em atendimento: finalizar. Após duas chamadas: registrar ausência se o cliente não compareceu.</p>
+<p>Gestor: acesso também à área de gestão.</p></section>
+<section><h2>Gestão</h2><div class="row"><div class="metric">Emitidas<br><strong>120</strong></div>
+<div class="metric">Atendidas<br><strong>108</strong></div></div>
+<ul><li>Relatórios diário, mensal e detalhado</li><li>Usuários e guichês autorizados</li>
+<li>Auditoria de chamadas e atendimentos</li><li>Encerramento do expediente</li></ul>
+<p>Gestor com guichê autorizado: acesso à área de atendimento.</p></section>
+</div><footer>Referências: frontend/app e docs/validacao-interface.md. Esta página não contém dados reais.</footer>
+</main></html>
